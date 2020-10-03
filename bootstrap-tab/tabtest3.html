@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Bootstrap Skeleton</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="./font/css/open-iconic-bootstrap.css" >
+    <style>
+        .nav-tabs>li {
+            position: relative;
+        }
+        .nav-link{
+            padding-right: 25px;
+        }
+        .nav-tabs>li>a {
+            display: inline-block;
+        }
+
+        .nav-tabs>li>a>span {
+            display: none;
+            cursor: pointer;
+            position: absolute;
+            right: 4px;
+            top: 14px;
+            color: #d38383;
+        }
+
+        .nav-tabs>li:hover>a>span {
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h5>bootstrap 4 </h5>
+        <h6>
+            <a href="https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior">
+                https://getbootstrap.com/docs/4.0/components/navs/#javascript-behavior
+            </a>
+        </h6>
+        <div><span class="glyphicon glyphicon-search"> x </span></div>
+        <div><span class="oi oi-circle-x"></span></div>
+        <div><a href="#" id="btnAdd"><i class="icon-plus-sign-alt"></i>Add Tab</a></div>
+        <br />
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+                <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+                    aria-selected="true">Home<span class="oi oi-circle-x"></span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" style="padding-right: 20px;"
+                    aria-controls="profile" aria-selected="false">Profile<span class="oi oi-circle-x"></span></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
+                    aria-controls="contact" aria-selected="false">Contact<span class="oi oi-circle-x"></span></a>
+            </li>
+            <li><a href="#" class="add-contact" data-toggle="tab">+ Add Contact</a></li>
+
+        </ul>
+        <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro
+                synth master cleanse. Mustache cliche by sweater eu banh mi, qui irure terry richardson ex squid.
+                Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate
+                nisi qui.
+            </div>
+            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1
+                labore velit, blog sartorial PBR leggings eard ut DIY ethical culpa terry richardson biodiesel. Art
+                party
+                scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.
+            </div>
+            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro
+                fanny pack lo-fi farm-to-table readymade. M . Scenester cred you probably haven't heard of them, vinyl
+                craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.
+            </div>
+        </div>
+    </div>
+
+
+    <script type="text/javascript">//<![CDATA[
+
+
+        $(".nav-tabs").on("click", "a", function (e) {
+            e.preventDefault();
+            $(this).tab('show');
+        })
+            .on("click", "span", function (e) {
+                //var anchor = $(this).siblings('a');
+                var anchor = $(this).parent();
+                $(anchor.attr('href')).remove();
+                //$(this).parent().remove();
+                $(this).parent().parent().remove();
+                //$(".nav-tabs li").children('a').first().click();
+                //$(".nav-tabs li").children('a').first().click();
+                $('#myTab a:last').tab('show');
+                e.stopPropagation();
+            });
+
+        $('.add-contact').click(function (e) {
+            e.preventDefault();
+            var id = $(".nav-tabs").children().length; //think about it ;)
+            $(this).closest('li').before('<li><a class="nav-link" href="#contact_' + id + '">New Tab<span class="oi oi-circle-x"></span></a></li>');
+            $('.tab-content').append('<div class="tab-pane" id="contact_' + id + '">Contact Form: New Contact ' + id + '</div>');
+        }); 
+        $('#btnAdd').click(function (e) {
+            var nextTab = $('#myTab li').length+1; 
+            // create the tab
+            $('<li><a class="nav-link" href="#tab'+nextTab+'" data-toggle="tab">Tab '+nextTab+'<span class="oi oi-circle-x"></span></a></li>').appendTo('#myTab'); 
+            $('<div class="tab-pane" id="tab'+nextTab+'">tab' +nextTab+' content</div>').appendTo('.tab-content'); 
+            $('#myTab a:last').tab('show');
+        });
+  //]]></script>
+</body>
+
+</html>
