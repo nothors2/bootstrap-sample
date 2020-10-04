@@ -74,7 +74,7 @@
                 <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
                     aria-controls="contact" aria-selected="false">Contact<span class="oi oi-circle-x"></span></a>
             </li>
-            <li><a href="#" class="add-contact" data-toggle="tab">+ Add Contact</a></li>
+            <li><a  href="#" class="nav-link add-contact" data-toggle="tab">+ Add Contact</a></li>
 
         </ul>
         <div class="tab-content" id="myTabContent">
@@ -103,7 +103,7 @@
 
 
         $(".nav-tabs").on("click", "a", function (e) {
-            e.preventDefault();
+            //e.preventDefault();
             $(this).tab('show');
         })
             .on("click", "span", function (e) {
@@ -112,8 +112,7 @@
                 $(anchor.attr('href')).remove();
                 //$(this).parent().remove();
                 $(this).parent().parent().remove();
-                //$(".nav-tabs li").children('a').first().click();
-                //$(".nav-tabs li").children('a').first().click();
+                //$(".nav-tabs li").children('a').first().click(); 
                 $('#myTab a:last').tab('show');
                 e.stopPropagation();
             });
