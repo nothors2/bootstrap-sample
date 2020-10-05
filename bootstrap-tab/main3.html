@@ -43,9 +43,11 @@
     .nav-tabs>li {
         position: relative;
     }
-    .nav-link{
+
+    .nav-link {
         padding-right: 25px;
     }
+
     .nav-tabs>li>a {
         display: inline-block;
     }
@@ -63,7 +65,6 @@
         display: inline-block;
     }
 </style>
-<<<<<<< HEAD
 
 <body>
     <div id="main" class="container-full h-100">
@@ -105,50 +106,10 @@
                     <div role="tabpanel" class="tab-pane fade h-100" id="home">
                         <iframe src="./home.html" width="100%" frameborder="NO" framespacing="0" height="99%"></iframe>
                     </div>
-=======
-<body>
-<div id="main" class="container-full h-100">
-    <div id="head" class="row" >
-        <div class="col-md-2">
-            상단 왼쪽 로그
-        </div>
-        <div class="col-md-8">
-            상단 대분류 : {{selectGroupId}} > {{selectMenuId}}
-            <div class="nav nav-tabs" role="tablist">
-                <a v-for="group in groups"  :href="'#'+group.id" data-toggle="tab" role="tab"  @click="selectGroup(group,group.id)"  class="nav-item nav-link ">{{group.name}}</a>
-            </div>
-        </div>
-        <div class="col-md-2" >
-            상단 오른쪽 로그인 정보
-            <ul>
-                <a href="/logout.do" class="">Logout</a>
-            </ul>
-        </div>
-    </div>
-    <div class="row" >
-        <div class="col-md-2">
-            <ul class="list-group">
-                <a v-for="menu in menus" v-if="menu.group == selectGroupId" class="list-group-item" @click="selectMenu(menu.id)" href="javascript:">
-                    <i  class='fa fa-home'></i>{{menu.name}}
-                </a>
-            </ul>
-        </div>
-        <div class="col-md-10 h-100">
-
-            <ul class="nav nav-tabs" id="tabList"  role="tablist">
-                <li class="nav-item" role="presentation">
-                    <a href="#home" data-toggle="tab" role="tab"  class="nav-link">Main</a>
-                </li>
-            </ul>
-            <div class="tab-content  w-100" id="tabContentList" >
-                <div role="tabpanel" class="tab-pane fade h-100" id="home">
-                    <iframe src="./home.html" width="100%" frameborder="NO" framespacing="0"  height="99%"></iframe>
->>>>>>> bc5bc05ad8f0ae51a73ed34435a7496f6683ed8c
                 </div>
             </div>
         </div>
     </div>
-<<<<<<< HEAD
 </body>
 
 <script>
@@ -172,38 +133,11 @@
                 setTimeout(enable, ms);
                 fn.call(this, e);
             } else {
-=======
-</div>
-</body>
-
-<script>
-    function selectTab(id){
-        console.log(id);
-        $('.nav-tabs a[href="#'+id+'"]').trigger('click');
-    }
-    function resizeContents(){
-        console.log(window.innerHeight);
-        var tabHeight = window.innerHeight - 51 -3 - 60- 05;
-        $('.tab-content').height(tabHeight);
-    }
-    function throttle(ms,fn){
-        var allow = true;
-        function enable(){
-            allow = true;
-        }
-        return function(e){
-            if(allow){
-                allow = false;
-                setTimeout(enable,ms);
-                fn.call(this,e);
-            }else{
->>>>>>> bc5bc05ad8f0ae51a73ed34435a7496f6683ed8c
                 //console.log(false);
             }
         }
     }
     var groups = [
-<<<<<<< HEAD
         { id: "sample", name: "Sample" },
         { id: "system", name: "System" },
         { id: "link1", name: "My Info", url: "/system/user/selectForm.do" },
@@ -237,61 +171,19 @@
                 const tab = this.tabs.filter(function (tab) { return tab.id == id; })[0];
                 const menu = this.menus.filter(function (menu) { return menu.id == id; })[0];
                 if (!tab) {
-=======
-                {id:"sample" ,name:"Sample"},
-                {id:"system" ,name:"System"},
-                {id:"link1" ,name:"My Info",url:"/system/user/selectForm.do"},
-    ];
-    var menus = [
-                {id:"menu2" ,group:"sample",name:"Able Sample",url:"/system/user01/selectForm.do"},
-                {id:"menu21" ,group:"sample",name:"Tabs Test",url:"./tabtest3.html"},
-                {id:"menu3" ,group:"sample",name:"Toast Grid Test",url:"/system/user02/selectForm.do"},
-                {id:"menu4" ,group:"sample",name:"Vue Test",url:"./sample/vue1.html"},
-                {id:"menu5" ,group:"sample",name:"bootStrap + Vue",url:"./sample/vue2.html"},
-                {id:"menu6" ,group:"sample",name:"work01.do",url:"/workA/work01/selectForm.do"},
-                {id:"menu7" ,group:"sample",name:"work02.do",url:"/workB/work02/selectForm.do"},
-                {id:"menu8" ,group:"sample",name:"user04.do",url:"/system/user04/selectForm.do"},
-                {id:"menu9" ,group:"sample",name:"rMate 기본",url:"/sample/sample01/selectForm.do"},
-                {id:"menu10",group:"sample",name:"rMate 정리",url:"/sample/sample02/selectForm.do"},
-                {id:"menu11",group:"system",name:"다국어 관리",url:"/sample/sample05/selectForm.do"},
-                {id:"menu12",group:"system",name:"common 코드",url:"/sample/commonmanagement/selectForm.do"},
-            ];
-    var app = new Vue({
-        el:'#main',
-        data:{
-            type:"",
-            groups:groups,
-            selectGroupId:"sample",
-            selectMenuId:"home",
-            menus:menus,
-            tabs:[]
-        },
-        methods:{
-            selectMenu : function(id){  // 사용안함
-                const tab = this.tabs.filter(function(tab){return tab.id == id;})[0];
-                const menu = this.menus.filter(function(menu){return menu.id == id;})[0];
-                if(!tab){
->>>>>>> bc5bc05ad8f0ae51a73ed34435a7496f6683ed8c
                     this.tabs.push(menu);
                     //setTimeout( function(){selectTab(id)},100);  //지연선택
 
                     addTab(menu);
                     this.focusMenu(id);
-<<<<<<< HEAD
                 } else {
                     selectTab(id);
                     const tabs = this.tabs.filter(function (tab) { return tab.id != id; });
-=======
-                }else{
-                    selectTab(id);
-                    const tabs = this.tabs.filter(function(tab){return tab.id != id;});
->>>>>>> bc5bc05ad8f0ae51a73ed34435a7496f6683ed8c
                     this.tabs = tabs;
                     this.tabs.push(menu); //젤 마지막으로
                 }
                 this.selectMenuId = id;
             },
-<<<<<<< HEAD
             selectGroup: function (group, id) {
                 if (group.url) return;
                 this.selectGroupId = id;
@@ -305,21 +197,6 @@
                     }
                 }
                 if (pos < 0) return;
-=======
-            selectGroup : function(group,id){
-                if(group.url) return;
-                this.selectGroupId = id;
-            },
-            removeMenu:function(id,event){  // 사용안함
-
-                var pos = -1;
-                for(var i =0;i<this.tabs.length;i++){
-                    if(this.tabs[i].id == id){
-                        pos = i; break;
-                    }
-                }
-                if(pos<0) return;
->>>>>>> bc5bc05ad8f0ae51a73ed34435a7496f6683ed8c
                 this.tabs[pos].remove = true;
 
                 //const tabs = this.tabs.filter(function(tab){return tab.id != id;});
@@ -327,13 +204,8 @@
 
                 //this.focusMenu(tabs[tabs.length-1].id);
             },
-<<<<<<< HEAD
             focusMenu: function (id) {
                 setTimeout(function () { selectTab(id) }, 100);  //지연선택 vue render time
-=======
-            focusMenu : function(id){
-                setTimeout( function(){selectTab(id)},100);  //지연선택 vue render time
->>>>>>> bc5bc05ad8f0ae51a73ed34435a7496f6683ed8c
             }
         }
     });
@@ -343,27 +215,18 @@
 
         $('.nav-tabs a[href="#home"]').trigger('click');
         //$(window).resize(resizeContents);
-<<<<<<< HEAD
         $(window).resize(throttle(2000, function (e) { resizeContents() }));
-=======
-        $(window).resize(throttle(2000,function(e){resizeContents()}));
->>>>>>> bc5bc05ad8f0ae51a73ed34435a7496f6683ed8c
         resizeContents();
     });
 
 </script>
 <script type="text/javascript">//<![CDATA[
-<<<<<<< HEAD
     function removeTab(e) {
-=======
-    function removeTab(e){
->>>>>>> bc5bc05ad8f0ae51a73ed34435a7496f6683ed8c
         var anchor = $(this).parent();
         var id = anchor.attr('href').substring(1);
         $(anchor.attr('href')).remove();    //content remove
         $(this).parent().parent().remove();  //tab remove
         //$('#tabList a:last').tab('show');
-<<<<<<< HEAD
         const tabs = app.tabs.filter(function (tab) { return tab.id != id; });
         app.tabs = tabs;
         if (tabs.length > 0)
@@ -381,25 +244,6 @@
         $(tabList).appendTo('#tabList');
         var content = '<div role="tabpanel" class="tab-pane fade h-100" id="' + menu.id + '">\
                     <iframe src="./'+ menu.url + '" width="100%" frameborder="NO" framespacing="0"  height="99%"></iframe>\
-=======
-        const tabs = app.tabs.filter(function(tab){return tab.id != id;});
-        app.tabs = tabs;
-        if(tabs.length>0)
-            selectTab(tabs[tabs.length-1].id);
-        else selectTab("home");
-        e.stopPropagation();
-    }
-    function addTab(menu){
-        var nextTab = $('#tabList li').length+1;
-        // create the tab
-        var tabList = '<li>\
-                            <a class="nav-link" href="#'+menu.id+'" data-toggle="tab">'+menu.name+'<span class="oi oi-circle-x"></span>\
-                            </a>\
-                       </li>';
-        $(tabList).appendTo('#tabList');
-        var content = '<div role="tabpanel" class="tab-pane fade h-100" id="'+menu.id+'">\
-                    <iframe src="./'+menu.url+'" width="100%" frameborder="NO" framespacing="0"  height="99%"></iframe>\
->>>>>>> bc5bc05ad8f0ae51a73ed34435a7496f6683ed8c
                 </div>';
         $(content).appendTo('#tabContentList');
         //$('#tabList a:last').tab('show');
@@ -408,28 +252,16 @@
         //e.preventDefault();
         $(this).tab('show');
         var id = $(this).attr("href").substring(1);
-<<<<<<< HEAD
         if (id == "home") return;
 
         const menu = app.menus.filter(function (menu) { return menu.id == id; })[0];
         if (!menu) return;
         const tabs = app.tabs.filter(function (tab) { return tab.id != id; });
-=======
-        if(id == "home") return;
-
-        const menu = app.menus.filter(function(menu){return menu.id == id;})[0];
-        if(!menu) return;
-        const tabs = app.tabs.filter(function(tab){return tab.id != id;});
->>>>>>> bc5bc05ad8f0ae51a73ed34435a7496f6683ed8c
         app.tabs = tabs;
         app.tabs.push(menu); //젤 마지막으로
 
     }).on("click", "span", removeTab);
 
   //]]></script>
-<<<<<<< HEAD
 
 </html>
-=======
-</html>
->>>>>>> bc5bc05ad8f0ae51a73ed34435a7496f6683ed8c
