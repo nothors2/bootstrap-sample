@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Bootstrap Skeleton</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="./font/css/open-iconic-bootstrap.css">
+    <style>
+        .nav-tabs>li {
+            position: relative;
+        }
+
+        .nav-link {
+            padding-right: 25px;
+        }
+
+        .nav-tabs>li>a {
+            display: inline-block;
+        }
+
+        .nav-tabs>li>a>span {
+            display: none;
+            cursor: pointer;
+            position: absolute;
+            right: 4px;
+            top: 14px;
+            color: #d38383;
+        }
+
+        .nav-tabs>li:hover>a>span {
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="main">
+        <h5>vue test </h5>
+        <div>
+            <input v-model="msg">
+            <br>
+            <child v-bind:message="msg"></child>
+            <br>
+            <child v-bind:message="msg"></child>
+        </div>
+    </div>
+    <script>
+        //전영컴포넌트
+        Vue.component('child', {
+            // JavaScript는 camelCase
+            props: ['message'],
+            template: '<input :value="message"></input>'
+        })
+        var app = new Vue({
+            el: '#main',
+            data: {
+                msg: "",
+                tabs: []
+            },
+        });
+
+    </script>
+
+    <br>
+    <br>
+
+    <div class="container" id="main2">
+        <h5>vue test props</h5>
+        <div>
+            <input v-model="msg">
+            <br>
+            <child2 :my-message="msg"></child2>
+        </div>
+    </div>
+    <script>
+        var child2 = {
+            // JavaScript는 camelCase
+            props: ['myMessage'],
+            template: '<span>{{ myMessage }}</span>'
+        };
+        var app = new Vue({
+            el: '#main2',
+            data: {
+                msg: "",
+                tabs: []
+            },
+            components: {
+                "child2": child2
+            }
+        });
+
+    </script>
+
+
+    <br>
+    <br>
+
+    <div class="container" id="main3">
+        <h5>vue test props data</h5>
+        <div>
+            <input v-model="msg">
+            <br>
+            <child2 :my-message="msg"></child2>
+        </div>
+    </div>
+    <script>
+        var child3 = {
+            // JavaScript는 camelCase
+            props: ['myMessage'],
+            template: '<div>\
+                    <span>myMessage: {{ myMessage }}</span><br>\
+                    <span>msg: {{ msg }}</span>\
+                </div>\
+                ',
+            data: function () {
+                return { msg: this.myMessage }
+            },
+        };
+        var app = new Vue({
+            el: '#main3',
+            data: {
+                msg: "first value",
+                tabs: []
+            },
+            components: {
+                "child2": child3
+            }
+        });
+
+    </script>
+
+    <br>
+    <br>
+
+    <div class="container" id="main4">
+        <h5>vue test props data2(객체로 넘기면 부모고 뭐고 다 영향을 줌)</h5>
+        <div>
+            <input v-model="msg.data">
+            <br>
+            <span>{{msg.data}}</span>
+            <child2 :my-message="msg"></child2>
+            <child2 :my-message="msg"></child2>
+        </div>
+    </div>
+    <script>
+        var child4 = {
+            props: ['myMessage'],
+            template: '<div>\
+                    <span>myMessage: {{ myMessage.data }}</span><br>\
+                    <span>msg: {{ msg.data }}</span>\
+                    <span>msg: {{ msg.data }}</span>\
+                    <input v-model="myMessage.data"></input>\
+                </div>\
+                ',
+            data: function () {
+                return { msg: this.myMessage }
+            },
+        };
+        var app = new Vue({
+            el: '#main4',
+            data: {
+                msg: { data: "first value" },
+                tabs: []
+            },
+            components: {
+                "child2": child4
+            }
+        });
+
+    </script>
+
+    <br>
+    <br>
+
+    <div class="container" id="main5">
+        <h5>vue test props computed data4 </h5>
+        <div>
+            <input v-model="msg.data">
+            <input v-model="msg2">
+            <br>
+            <span>{{msg.data}}</span>
+            <child2 :my-message="msg" :msg2="msg2"></child2>
+        </div>
+    </div>
+    <script>
+        var app = new Vue({
+            el: '#main5',
+            data: {
+                msg: { data: "first value" },
+                msg2: "msg2 first value",
+                tabs: []
+            },
+            components: {
+                "child2": {
+                    props: ['myMessage', "msg2"],
+                    template: '<div>\
+                                    <span>myMessage: {{ myMessage.data }}</span><br>\
+                                    <span>msg: {{ msg.data }}</span><br>\
+                                    <span>msg2: {{ msg2 }}</span><br>\
+                                    <input v-model="myMessage.data">myMessage.data</input><br>\
+                                    <span>trim: {{trim }}</span><br>\
+                                </div>\
+                                ',
+                    data: function () {
+                        return { msg: this.myMessage }
+                    },
+                    computed: {
+                        trim: function () {
+                            return this.myMessage.data;
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+    <br>
+    <br>
+
+    <div class="container" id="todo-list-example">
+        <h5>vue test props v-for commonent + emit </h5>
+        <form v-on:submit.prevent="addNewTodo">
+            <label for="new-todo">Add a todo</label>
+            <input v-model="newTodoText" id="new-todo" placeholder="E.g. Feed the cat">
+            <button>Add</button>
+        </form>
+        <ul>
+            <li is="todo-item" v-for="(todo, index) in todos" v-bind:key="todo.id" v-bind:title="todo.title"
+                v-on:remove-todo="todos.splice(index, 1)"></li>
+        </ul>
+    </div>
+    <script>
+        Vue.component('todo-item', {
+            template: '\
+                <li>\
+                {{ title }}\
+                <button v-on:click="$emit(\'remove-todo\')">Remove</button>\
+                </li>\
+            ',
+            props: ['title']
+        })
+
+        new Vue({
+            el: '#todo-list-example',
+            data: {
+                newTodoText: '',
+                todos: [
+                    {
+                        id: 1,
+                        title: 'Do the dishes',
+                    },
+                    {
+                        id: 2,
+                        title: 'Take out the trash',
+                    },
+                    {
+                        id: 3,
+                        title: 'Mow the lawn'
+                    }
+                ],
+                nextTodoId: 4
+            },
+            methods: {
+                addNewTodo: function () {
+                    this.todos.push({
+                        id: this.nextTodoId++,
+                        title: this.newTodoText
+                    })
+                    this.newTodoText = ''
+                }
+            }
+        })
+    </script>
+
+
+    <br>
+    <br>
+
+    <!-- template for the modal component -->
+    <script type="text/x-template" id="modal-template">
+        <transition name="modal">
+            <div class="modal-mask">
+                <div class="modal-wrapper">
+                    <div class="modal-container"> 
+                        <div class="modal-header">
+                            <slot name="header">
+                                default header
+                            </slot>
+                        </div> 
+                        <div class="modal-body">
+                            <slot name="body">
+                                default body
+                            </slot>
+                        </div> 
+                        <div class="modal-footer">
+                            <slot name="footer"> 
+                                <button class="modal-default-button" @click="$emit('close')">
+                                    Close
+                                </button>
+                            </slot>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </transition>
+    </script>
+
+    <!-- app -->
+    <div class="container" id="app333">
+        <h5>vue test 동적 (slot) 테스트 </h5>
+        <button id="show-modal" @click="showModal = true">Show Modal</button>
+        <modal v-if="showModal" @close="showModal = false">
+            <h3 slot="header">{{headText}}</h3>
+            <h4 slot="body">{{message}}</h4>
+        </modal>
+    </div>
+
+    <script>
+        Vue.component('modal', {
+            template: '#modal-template'
+        })
+
+        // start app
+        new Vue({
+            el: '#app333',
+            data: {
+                showModal: false,
+                headText: "Alert",
+                message: "안녕하세요",
+            }
+        })
+    </script>
+
+    <style>
+        .modal-mask {
+            position: fixed;
+            z-index: 9998;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(126, 173, 223, 0.158);
+            display: table;
+            transition: opacity .3s ease;
+        }
+
+        .modal-wrapper {
+            display: table-cell;
+            vertical-align: middle;
+        }
+
+        .modal-container {
+            width: 400px;
+            margin: 0px auto;
+            padding: 20px 30px;
+            background-color: #fff;
+            border-radius: 2px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, .33);
+            transition: all .3s ease;
+            font-family: Helvetica, Arial, sans-serif;
+        }
+
+        .modal-header h3 {
+            margin-top: 0;
+            color: #42b983;
+        }
+
+        .modal-body {
+            margin: 20px 0;
+        }
+
+        .modal-default-button {
+            float: right;
+        }
+
+        .modal-enter {
+            opacity: 0;
+        }
+
+        .modal-leave-active {
+            opacity: 0;
+        }
+
+        .modal-enter .modal-container,
+        .modal-leave-active .modal-container {
+            -webkit-transform: scale(1.0);
+            transform: scale(1.01);
+        }
+    </style>
+    <br>
+    <br>
+    <!-- app -->
+    <div class="container" id="appTest1">
+        <h5>vue test 동적 모달 테스트 </h5>
+    </div>
+    <script>
+        var vue_temp = '    \
+            <div class="container" id="app333"> \
+                <h5>vue test 동적 (slot) 테스트 </h5>\
+                <button id="show-modal" @click="showModal = true">Show Modal</button>\
+                <modal v-if="showModal" @close="showModal = false">\
+                    <h3 slot="header">{{headText}}</h3>\
+                    <h4 slot="body">{{message}}</h4>\
+                </modal>\
+            </div>';
+        $(document.body).ready(function () {
+
+            $(vue_temp).appendTo('#appTest1');
+            new Vue({
+                el: '#appTest1',
+                data: {
+                    showModal: false,
+                    headText: "Alert",
+                    message: "안녕하세요",
+                }
+            })
+        });
+    </script>
+
+</html>
