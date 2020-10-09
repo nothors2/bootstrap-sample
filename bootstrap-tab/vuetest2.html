@@ -203,7 +203,7 @@
 <script type="text/x-template" id="my-template"  >
     <li> 
       <div class="" @click="isOpen = !isOpen">{{item.text}} 
-        <span >[{{ isOpen ? '-' : '+' }}]</span>
+        <span v-show="hasChild">[{{ isOpen ? '-' : '+' }}]</span>
       </div>
       <!-- <div v-for="(child) in item.child" v-if="child"class="item"   >div1 :{{child.text}} 
         <div v-for="(child2) in child.child" v-if="child2"class="item"  > &nbsp;div2 :{{child2.text}} 
@@ -237,7 +237,12 @@
                         text: "title32",
                         child: [
                             { text: "title31" },
-                            { text: "title32" },
+                            {
+                                text: "title42",
+                                child: [
+                                    { text: "title51" }, 
+                                ]
+                            },
                         ]
                     },
                 ]
@@ -249,7 +254,7 @@
         template:  ' \
             <li> \
                 <div class="" @click="isOpen = !isOpen">{{item.text}} \
-                    <span >[{{ isOpen ? \'-\' : \'+\' }}]</span>\
+                    <span v-show="hasChild">[{{ isOpen ? \'-\' : \'+\' }}]</span>\
                 </div>\
                 <ul v-show="isOpen">\
                     <my-component v-for="(child,index) in item.child" v-if="child"  class="item" :key="index" :item="child" > \
@@ -263,6 +268,12 @@
                 isOpen: false
             }
         },   
+        computed:{
+            hasChild:function(){
+                console.log(this.item.child);
+                return this.item.child;
+            }
+        }
     });
     var myDemo = new Vue({
         el: '#myDemo',
