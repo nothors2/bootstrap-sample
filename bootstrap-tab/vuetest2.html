@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Bootstrap Skeleton</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="./font/css/open-iconic-bootstrap.css">
+    <style>
+        body {
+            font-family: Menlo, Consolas, monospace;
+            color: #444;
+        }
+
+        .item {
+            cursor: pointer;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        ul {
+            padding-left: 1em;
+            line-height: 1.5em;
+            list-style-type: dot;
+        }
+    </style>
+</head>
+<div class="container">
+    <ul>
+
+        <li class="item">
+            <div class="bold">
+                child folder
+                <span>[-]</span></div>
+            <ul style="">
+                <li class="item">
+                    <div class="">
+                        hello
+                        <!---->
+                    </div>
+                    <!---->
+                </li>
+                <li class="item">
+                    <div class="">
+                        wat
+                        <!---->
+                    </div>
+                    <!---->
+                </li>
+                <li class="add">+</li>
+            </ul>
+        </li>
+    </ul>
+</div>
+<!-- app -->
+<div class="container" id="appTest1">
+    <h5>vue test tree 순환 component</h5>
+    <a href="https://kr.vuejs.org/v2/examples/tree-view.html">https://kr.vuejs.org/v2/examples/tree-view.html</a>
+
+    <!-- item template -->
+
+
+    <p>(You can double click on an item to turn it into a folder.)</p>
+
+    <!-- the demo root element -->
+    <ul id="demo">
+        <tree-item class="item" :item="treeData" @make-folder="makeFolder" @add-item="addItem"></tree-item>
+    </ul>
+</div>
+<script type="text/x-template" id="item-template">
+    <li>
+      <div
+        :class="{bold: isFolder}"
+        @click="toggle"
+        @dblclick="makeFolder">
+        {{ item.name }}
+        <span v-if="isFolder">[{{ isOpen ? '-' : '+' }}]</span>
+      </div>
+      <ul v-show="isOpen" v-if="isFolder">
+        <tree-item
+          class="item"
+          v-for="(child, index) in item.children"
+          :key="index"
+          :item="child"
+          @make-folder="$emit('make-folder', $event)"
+          @add-item="$emit('add-item', $event)"
+        ></tree-item>
+        <li class="add" @click="$emit('add-item', item)">+</li>
+      </ul>
+    </li>
+</script>
+<script>
+    // demo data
+    var treeData = {
+        name: 'My Tree',
+        children: [
+            { name: 'hello' },
+            { name: 'wat' },
+            {
+                name: 'child folder',
+                children: [
+                    {
+                        name: 'child folder',
+                        children: [
+                            { name: 'hello' },
+                            { name: 'wat' }
+                        ]
+                    },
+                    { name: 'hello' },
+                    { name: 'wat' },
+                    {
+                        name: 'child folder',
+                        children: [
+                            { name: 'hello' },
+                            { name: 'wat' }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+
+    // define the tree-item component
+    Vue.component('tree-item', {
+        template: '#item-template',
+        props: {
+            item: Object
+        },
+        data: function () {
+            return {
+                isOpen: false
+            }
+        },
+        computed: {
+            isFolder: function () {
+                return this.item.children &&
+                    this.item.children.length
+            }
+        },
+        methods: {
+            toggle: function () {
+                if (this.isFolder) {
+                    this.isOpen = !this.isOpen
+                }
+            },
+            makeFolder: function () {
+                if (!this.isFolder) {
+                    this.$emit('make-folder', this.item)
+                    this.isOpen = true
+                }
+            }
+        }
+    })
+
+    // boot up the demo
+    var demo = new Vue({
+        el: '#demo',
+        data: {
+            treeData: treeData
+        },
+        methods: {
+            makeFolder: function (item) {
+                Vue.set(item, 'children', [])
+                this.addItem(item)
+            },
+            addItem: function (item) {
+                item.children.push({
+                    name: 'new stuff'
+                })
+            }
+        }
+    })
+</script>
+
+<!-- app -->
+<div class="container" id="myDemo">
+    <h5>vue test 순환 component 실습</h5>
+    <ul id="myDemo">
+        <my-component class="item" :item="myData"></my-component>
+    </ul>
+</div>
+
+<script type="text/x-template" id="my-template"  >
+    <li> 
+      <div class="" @click="isOpen = !isOpen">{{item.text}} 
+        <span >[{{ isOpen ? '-' : '+' }}]</span>
+      </div>
+      <!-- <div v-for="(child) in item.child" v-if="child"class="item"   >div1 :{{child.text}} 
+        <div v-for="(child2) in child.child" v-if="child2"class="item"  > &nbsp;div2 :{{child2.text}} 
+            <div v-for="(child3) in child2.child" v-if="child3"class="item"   > &nbsp;&nbsp;div3 :{{child3}}</div>
+        </div>  
+      </div>   -->
+      <ul v-show="isOpen">
+          <my-component v-for="(child) in item.child" v-if="child" class="item" :item="child" > 
+          </my-component>
+      </ul>
+    </li >
+</script>
+
+<script> 
+    // boot up the demo
+    var myData = ["test1", "test2"];
+    var myData2 = {
+        text: "title1",
+        child: [
+            {
+                text: "title21",
+                child: [
+                    {
+                        text: "title31",
+                        child: [
+                            { text: "title41" },
+                            { text: "title42" },
+                        ]
+                    },
+                    {
+                        text: "title32",
+                        child: [
+                            { text: "title31" },
+                            { text: "title32" },
+                        ]
+                    },
+                ]
+            },
+            { text: "title22" },
+        ]
+    } ; 
+    Vue.component('my-component', {
+        template:  ' \
+            <li> \
+                <div class="" @click="isOpen = !isOpen">{{item.text}} \
+                    <span >[{{ isOpen ? \'-\' : \'+\' }}]</span>\
+                </div>\
+                <ul v-show="isOpen">\
+                    <my-component v-for="(child,index) in item.child" v-if="child"  class="item" :key="index" :item="child" > \
+                    </my-component>\
+                </ul>\
+            </li>\
+            ',
+        props: ["item"],
+        data: function () {
+            return {
+                isOpen: false
+            }
+        },   
+    });
+    var myDemo = new Vue({
+        el: '#myDemo',
+        data: {
+            myData: myData2
+        },
+    });    
+</script>
+
+</html>
