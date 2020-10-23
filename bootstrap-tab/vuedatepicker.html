@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Bootstrap Skeleton</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="./font/css/open-iconic-bootstrap.css">
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <script>
+        $( function() {
+          $( "#datepicker" ).datepicker();
+          $( "#format" ).on( "change", function() {
+            $( "#datepicker" ).datepicker( "option", "dateFormat", $( this ).val() );
+          });
+        } );
+        </script>
+</head>
+<!-- app -->
+<div class="container" id="appTest1">
+    <h5>jquery ui datepicker</h5>
+    <a href="https://jqueryui.com/datepicker/#date-formats">https://jqueryui.com/datepicker/#date-formats</a>
+
+    <!-- item template -->
+    <p>Date: <input type="text" id="datepicker" size="30"></p>
+ 
+    <p>Format options:<br>
+      <select id="format">
+        <option value="mm/dd/yy">Default - mm/dd/yy</option>
+        <option value="yy-mm-dd">ISO 8601 - yy-mm-dd</option>
+        <option value="d M, y">Short - d M, y</option>
+        <option value="d MM, y">Medium - d MM, y</option>
+        <option value="DD, d MM, yy">Full - DD, d MM, yy</option>
+        <option value="&apos;day&apos; d &apos;of&apos; MM &apos;in the year&apos; yy">With text - 'day' d 'of' MM 'in the year' yy</option>
+      </select>
+    </p>
+     
+</div> 
+
+
+<br>
+<br>
+
+
+<div class="container" id="appTest2">
+  <h5>Vue jquery ui datepicker</h5>
+  <a href="https://zetawiki.com/wiki/Vue.js_datepicker_%EC%82%AC%EC%9A%A9">https://zetawiki.com/wiki/Vue.js_datepicker_사용</a>
+
+  <!-- item template --> 
+  <datepicker @update-date="updateDate" v-once></datepicker>
+  <p>{{ date }}</p> 
+   
+</div> 
+<script>
+  Vue.component('datepicker', {
+    template: '<input/>',
+    mounted: function() {
+      var self = this;
+      $(this.$el).datepicker({
+        dateFormat: "yy-mm-dd",
+        changeMonth: true,
+        changeYear: true,      
+        buttonImage: "images/calendar.gif",
+        onSelect: function(d){self.$emit('update-date',d)}
+      });
+    },
+    beforeDestroy: function(){$(this.$el).datepicker('hide').datepicker('destroy')}
+  });
+  
+  new Vue({
+    el: '#appTest2',
+    data: {
+      date: null
+    },
+    methods: {
+      updateDate: function(d) {
+        this.date = d;
+      }
+    }
+  });
+  </script>
+</html>
