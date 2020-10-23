@@ -58,10 +58,11 @@
 <div class="container" id="appTest2">
   <h5>Vue jquery ui datepicker</h5>
   <a href="https://zetawiki.com/wiki/Vue.js_datepicker_%EC%82%AC%EC%9A%A9">https://zetawiki.com/wiki/Vue.js_datepicker_사용</a>
-
+  <br>
   <!-- item template --> 
-  <datepicker @update-date="updateDate" v-once></datepicker>
+  <datepicker @update-date="updateDate"    v-model="selected"></datepicker>
   <p>{{ date }}</p> 
+  <p>{{ selected }}</p> 
    
 </div> 
 <script>
@@ -71,10 +72,21 @@
       var self = this;
       $(this.$el).datepicker({
         dateFormat: "yy-mm-dd",
+        prevText: '이전 달',
+        nextText: '다음 달',
+        monthNames: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        monthNamesShort: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+        dayNames: ['일', '월', '화', '수', '목', '금', '토'],
+        dayNamesShort: ['일', '월', '화', '수', '목', '금', '토'],
+        dayNamesMin: ['일', '월', '화', '수', '목', '금', '토'],
+        showMonthAfterYear: true,
+        yearSuffix: '년',
         changeMonth: true,
         changeYear: true,      
         buttonImage: "images/calendar.gif",
-        onSelect: function(d){self.$emit('update-date',d)}
+        onSelect: function(d){
+          self.$emit('update-date',d); 
+        }
       });
     },
     beforeDestroy: function(){$(this.$el).datepicker('hide').datepicker('destroy')}
@@ -83,7 +95,8 @@
   new Vue({
     el: '#appTest2',
     data: {
-      date: null
+      date: null,
+      selected: null
     },
     methods: {
       updateDate: function(d) {
