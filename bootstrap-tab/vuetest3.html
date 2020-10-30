@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <title>Bootstrap Skeleton</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="./font/css/open-iconic-bootstrap.css">
+
+    <style>
+        body {
+            font-family: Menlo, Consolas, monospace;
+            color: #444;
+        }
+
+        .item {
+            cursor: pointer;
+        }
+
+        .bold {
+            font-weight: bold;
+        }
+
+        ul {
+            padding-left: 1em;
+            line-height: 1.5em;
+            list-style-type: dot;
+        }
+    </style>
+</head>
+<!-- app -->
+<div class="container" id="appTest1">
+    <h5>Vue 예제 tree 순환 component</h5>
+    <a href="https://kr.vuejs.org/v2/guide/computed.html">https://kr.vuejs.org/v2/guide/computed.html</a>
+ 
+
+    <!-- the demo root element -->
+    <ul id="demo">
+        <input :value="subcount('test3')"/>
+    </ul>
+    <ul v-for="list in arr">
+        <li>{{list.value}}</li>
+        <ul  v-if = "subcount(list.id)" >
+            <li v-for="sublist in subarr(list.id)">{{sublist.value}}</li> 
+        </ul>
+    </ul>
+    <ul  >
+        <li>{{subcount('test3')}}</li> 
+    </ul>
+    </div>  
+<script>
+    var arr = [
+        {id:'test1',value:'val1'},
+        {id:'test2',value:'val2'},
+        {id:'test3',value:'val3'},
+        {id:'test31',pid:'test3',value:'val31'},
+        {id:'test32',pid:'test3',value:'val32'},
+        {id:'test33',pid:'test3',value:'val33'},
+        {id:'test4',value:'val4'},
+        {id:'test41',pid:'test4',value:'val41'},
+        {id:'test42',pid:'test4',value:'val42'},
+        {id:'test5',value:'val4'},
+    ];
+    var vm = new Vue({
+            el: '#appTest1',
+            data: {
+                message: '안녕하세요',
+                arr:arr,
+            },
+            methods: {   
+                subcount: function (id) {
+                // `this` 는 vm 인스턴스를 가리킵니다.
+                    return this.subarr(id).length;
+                }, 
+                subarr: function (id) {
+                // `this` 는 vm 인스턴스를 가리킵니다. 
+                    var newArr = arr.filter(function(el){ return el.pid == id;})
+                    return newArr;
+                }, 
+            }
+        })
+</script>
+</html>
