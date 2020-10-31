@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="ko" dir="ltr">
+<head>
+<meta charset="utf-8">
+<title>글로벌생산성경영시스템 GPMS</title>
+    <script src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> 
+
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="./font/css/open-iconic-bootstrap.css" >
+    <link rel="stylesheet" href="css/style.css">
+    
+<script type="text/javascript" src="js/jquery-1.11.0.min.js"></script>
+<script type="text/javascript" src="js/layout.js"></script>
+
+</head>
+
+<style>
+.nav-link {
+    display: block;
+    padding: 0;
+
+}
+.nav-tabs .nav-link {
+    border: 0px solid transparent;
+    border-top-left-radius: .25rem;
+    border-top-right-radius: .25rem;
+}
+</style>
+<body>
+
+<div id="wrap">
+
+	<div class="layout" id="main">
+        <div class="navBar">
+            <div class="leftNaviBox">
+                <h1 class="logo"><img src="images/login_logo.png" alt="현대모터스" /></h1>                
+            </div>
+            <div class="menu3Button">
+                <!-- 닫히는 버튼 -->
+        		<a href="#"><img src="images/menu_btn.png" alt="메뉴" /></a>
+            </div>
+            <div class="rightNaviBox">
+                <ul class="rightNavi_menu">
+                    <li v-for="list in group"  @click="selectedgroup=list.id">  
+                        <a href="#" :class="[selectedgroup==list.id?'rightNavi_on':'']" >{{list.value}}</a>
+                    </li> 
+                </ul>
+                
+                <!-- <div class="tab_menu">
+                    <ul>
+                    	<li>Main</li>
+                        <li>Able Sample</li>
+                        <li>Toast Grid Test</li>
+                        <li class="tab_menu_on">Mate 정리<a href="#"><span><img src="images/tab_x.png" alt="닫기" /></span></a></li>
+                    </ul>
+                </div> -->
+                <div class="tab_menu">
+                    <ul class="nav nav-tabs" id="myTab" role="tablist">
+                        <li class="tab_menu_on">
+                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+                                aria-selected="true">Home<span class="oi oi-circle-x"></span></a>
+                        </li>
+                        <li >
+                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" style="padding-right: 20px;"
+                                aria-controls="profile" aria-selected="false">Profile<span class="oi oi-circle-x"></span></a>
+                        </li>
+                        <li >
+                            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab"
+                                aria-controls="contact" aria-selected="false">Contact<span class="oi oi-circle-x"></span></a>
+                        </li>
+                        <li><a  href="#" class="nav-link add-contact" data-toggle="tab">+ Add Contact</a></li>
+        
+                    </ul> 
+                </div>           
+            </div>
+            <!-- 상단 컨텐츠 아이콘 -->
+            <div class="top_sns">
+            	<a href="#"><img src="images/top_home_ico.png" alt="Home" /></a>
+                <a href="#"><img src="images/top_memo_ico.png" alt="메모" /></a>
+                <a href="#"><img src="images/top_out_ico.png" alt="나가기" /></a>
+            </div>
+            
+            
+        </div>
+
+        <div class="sideBar">
+            
+            <ul v-for="group in group" v-if="group.id==selectedgroup" class="sideMenu"> 
+            	<a href="#">{{group.value}}</a>
+            	<li v-for="list in menu" v-if="list.pid==selectedgroup">
+                    <a href="#" v-if="subcount(list.id)==0" >{{list.value}}</a>
+                    <div class="sideMenu_menu"  v-if="subcount(list.id)>0">{{list.value}}</div>
+                    <ul class="sideMenu_1depth"  v-if="subcount(list.id)>0" style="display:block;">
+                        <li v-for="sidemenu in submenu(list.id)">
+                            <a href="#">{{sidemenu.value}}</a>
+                        </li>
+                    </ul>
+                </li> 
+            </ul> 
+            <ul   class="sideMenu">
+            	<li><a href="#">조직마스터</a></li>
+				<li><a href="#">코드내용</a></li>
+                <li>
+                    <div class="sideMenu_menu">시스템</div>
+                    <ul class="sideMenu_1depth">
+                        <li><a href="#">사용자 관리</a></li>
+                        <li><a href="#">메뉴관리</a></li>
+                        <li><a href="#">권한별 메뉴관리</a></li>
+                        <li><a href="#">다국어관리</a></li>
+                        <li><a href="#">사용자 접속회수</a></li>
+                        <li><a href="#">배치작업관리</a></li>
+                    </ul>
+                </li>
+                <li>
+                    <div class="sideMenu_menu">마스터</div>
+                    <!-- 2차 메뉴 -->
+                    <ul class="sideMenu_1depth">
+                        <li><a href="#">개인별 시간조절</a></li>
+                    </ul>
+                </li>
+                <li><a href="#">공통지원배부</a></li>
+                <li>
+                    <div class="sideMenu_menu">간접부분배부</div>
+                    <!-- 2차 메뉴 -->
+                    <ul class="sideMenu_1depth">
+                        <li><a href="#">해외신규</a></li>
+                        <li><a href="#">현황관리</a></li>
+                    </ul>
+                </li>
+            </ul> 
+        </div>
+        
+        <!-- S:컨텐츠 시작 -->
+        <div class="contentBar">  
+            <div class="tab-content" id="myTabContent">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro
+                    synth master cleanse. Mustache cliche by sweater eu banh mi, qui irure terry richardson ex squid.
+                    Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate
+                    nisi qui.
+                    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                </div>
+                <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1
+                    labore velit, blog sartorial PBR leggings eard ut DIY ethical culpa terry richardson biodiesel. Art
+                    party
+                    scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.
+                </div>
+                <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
+                    Etsy mixtape wayfarers, ethical wes anderson tofu before they sold out mcsweeney's organic lomo retro
+                    fanny pack lo-fi farm-to-table readymade. M . Scenester cred you probably haven't heard of them, vinyl
+                    craft beer blog stumptown. Pitchfork sustainable tofu synth chambray yr.
+                </div>
+            </div>
+        </div>
+        <!-- E:컨텐츠 시작 -->
+        
+    </div>
+    
+</div>
+
+
+<script type="text/javascript" src="js/common.js"></script>
+
+<script>
+    var group = [
+        {id:'group1',value:'생상성 종합'},
+        {id:'group2',value:'HPV'},
+        {id:'group3',value:'편성효율'},
+        {id:'group4',value:'가동률'},
+        {id:'base',value:'기초자료'},  
+    ];
+    var menu = [
+        {id:'menu1',pid:'group1',value:'생상성 종합 1'},
+        {id:'menu2',pid:'group2',value:'HPV 1'},
+        {id:'menu3',pid:'group3',value:'편성효율 1'},
+        {id:'menu4',pid:'group4',value:'가동률 1'},
+        {id:'menu5',pid:'base',value:'조직마스터'}, 
+        {id:'menu6',pid:'base',value:'코드내용'}, 
+        {id:'system',pid:'base',value:'시스템'}, 
+        {id:'system1',pid:'system',value:'공통코드 관리'}, 
+        {id:'system2',pid:'system',value:'사용자 관리'}, 
+        {id:'system3',pid:'system',value:'메뉴 관리'}, 
+        {id:'menu7',pid:'base',value:'마스터'}, 
+        {id:'system3',pid:'menu7',value:'개인별 시간조절'}, 
+        {id:'menu8',pid:'base',value:'공통지원배부'}, 
+        {id:'menu9',pid:'base',value:'공통지원배부'}, 
+    ];    
+    var vm = new Vue({
+            el: '#main',
+            data: {
+                message: '안녕하세요',
+                selectedgroup: 'base',
+                selectedmenu: 'system1',
+                group:group,
+                menu:menu,
+            },
+            methods: {   
+                subcount: function (id) {
+                // `this` 는 vm 인스턴스를 가리킵니다.
+                    return this.submenu(id).length;
+                }, 
+                submenu: function (id) {
+                // `this` 는 vm 인스턴스를 가리킵니다. 
+                    var newArr = menu.filter(function(el){ return el.pid == id;})
+                    return newArr;
+                }, 
+            }
+        })
+</script>
+</body>
+</html>
