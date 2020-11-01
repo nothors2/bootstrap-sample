@@ -36,6 +36,19 @@
     border-top-left-radius: .25rem;
     border-top-right-radius: .25rem;
 }
+.tab_menu { 
+    border-top: 0px solid #354773;
+}
+.sideMenu > li { 
+    cursor: pointer;
+}
+.tab_menu li { 
+    padding: 0 ; 
+}
+.nav-tabs .nav-link {
+    border: 0px ; 
+    padding: 0 20px 0 15px;
+}
 </style>
 <body>
 
@@ -55,24 +68,15 @@
                     <li v-for="list in group"  @click="selectedgroup=list.id">  
                         <a href="#" :class="[selectedgroup==list.id?'rightNavi_on':'']" >{{list.value}}</a>
                     </li> 
-                </ul>
-                
-                <!-- <div class="tab_menu">
-                    <ul>
-                    	<li>Main</li>
-                        <li>Able Sample</li>
-                        <li>Toast Grid Test</li>
-                        <li class="tab_menu_on">Mate 정리<a href="#"><span><img src="images/tab_x.png" alt="닫기" /></span></a></li>
-                    </ul>
-                </div> -->
+                </ul> 
                 <div class="tab_menu">
                     <ul class="nav nav-tabs" id="myTab" role="tablist">
-                        <li class="tab_menu_on">
+                        <li>
                             <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
                                 aria-selected="true">Home<span class="oi oi-circle-x"></span></a>
                         </li>
                         <li >
-                            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" style="padding-right: 20px;"
+                            <a class="nav-link " id="profile-tab" data-toggle="tab" href="#profile" role="tab"  
                                 aria-controls="profile" aria-selected="false">Profile<span class="oi oi-circle-x"></span></a>
                         </li>
                         <li >
@@ -95,50 +99,21 @@
         </div>
 
         <div class="sideBar">
-            
             <ul v-for="group in group" v-if="group.id==selectedgroup" class="sideMenu"> 
+                <button id="btnAdd">add</button>
             	<a href="#">{{group.value}}</a>
-            	<li v-for="list in menu" v-if="list.pid==selectedgroup">
-                    <a href="#" v-if="subcount(list.id)==0" >{{list.value}}</a>
-                    <div class="sideMenu_menu"  v-if="subcount(list.id)>0">{{list.value}}</div>
-                    <ul class="sideMenu_1depth"  v-if="subcount(list.id)>0" style="display:block;">
-                        <li v-for="sidemenu in submenu(list.id)">
-                            <a href="#">{{sidemenu.value}}</a>
-                        </li>
-                    </ul>
+            	<li v-for="list in menu" v-if="list.pid==group.id">
+                    <a href="#" v-if="subcount(list.id)==0" >{{list.value}}</a> 
+                    <template v-else>
+                        <div class="sideMenu_menu"  :class="list.open?'active_do':''"  @click="list.open=!list.open">{{list.value}}</div>
+                        <ul class="sideMenu_1depth"  v-show="list.open" style="display:block;">
+                            <li v-for="sidemenu in submenu(list.id)">
+                                <a href="#">{{sidemenu.value}}</a>
+                            </li>
+                        </ul>
+                    </template>
                 </li> 
-            </ul> 
-            <ul   class="sideMenu">
-            	<li><a href="#">조직마스터</a></li>
-				<li><a href="#">코드내용</a></li>
-                <li>
-                    <div class="sideMenu_menu">시스템</div>
-                    <ul class="sideMenu_1depth">
-                        <li><a href="#">사용자 관리</a></li>
-                        <li><a href="#">메뉴관리</a></li>
-                        <li><a href="#">권한별 메뉴관리</a></li>
-                        <li><a href="#">다국어관리</a></li>
-                        <li><a href="#">사용자 접속회수</a></li>
-                        <li><a href="#">배치작업관리</a></li>
-                    </ul>
-                </li>
-                <li>
-                    <div class="sideMenu_menu">마스터</div>
-                    <!-- 2차 메뉴 -->
-                    <ul class="sideMenu_1depth">
-                        <li><a href="#">개인별 시간조절</a></li>
-                    </ul>
-                </li>
-                <li><a href="#">공통지원배부</a></li>
-                <li>
-                    <div class="sideMenu_menu">간접부분배부</div>
-                    <!-- 2차 메뉴 -->
-                    <ul class="sideMenu_1depth">
-                        <li><a href="#">해외신규</a></li>
-                        <li><a href="#">현황관리</a></li>
-                    </ul>
-                </li>
-            </ul> 
+            </ul>  
         </div>
         
         <!-- S:컨텐츠 시작 -->
@@ -150,11 +125,16 @@
                     Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate
                     nisi qui.
                     <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+                    Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro
+                    synth master cleanse. Mustache cliche by sweater eu banh mi, qui irure terry richardson ex squid.
+                    Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate
+                    nisi qui.
                 </div>
                 <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
                     Food truck fixie locavore, accusamus mcsweeney's marfa nulla single-origin coffee squid. Exercitation +1
                     labore velit, blog sartorial PBR leggings eard ut DIY ethical culpa terry richardson biodiesel. Art
-                    party
+                    partyv
+                    <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
                     scenester stumptown, tumblr butcher vero sint qui sapiente accusamus tattooed echo park.
                 </div>
                 <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
@@ -188,11 +168,11 @@
         {id:'menu4',pid:'group4',value:'가동률 1'},
         {id:'menu5',pid:'base',value:'조직마스터'}, 
         {id:'menu6',pid:'base',value:'코드내용'}, 
-        {id:'system',pid:'base',value:'시스템'}, 
+        {id:'system',pid:'base',value:'시스템',open:true}, 
         {id:'system1',pid:'system',value:'공통코드 관리'}, 
         {id:'system2',pid:'system',value:'사용자 관리'}, 
         {id:'system3',pid:'system',value:'메뉴 관리'}, 
-        {id:'menu7',pid:'base',value:'마스터'}, 
+        {id:'menu7',pid:'base',value:'마스터',open:true}, 
         {id:'system3',pid:'menu7',value:'개인별 시간조절'}, 
         {id:'menu8',pid:'base',value:'공통지원배부'}, 
         {id:'menu9',pid:'base',value:'공통지원배부'}, 
@@ -218,6 +198,42 @@
                 }, 
             }
         })
+</script>
+
+
+
+<script type="text/javascript">//<![CDATA[
+
+
+    $(".nav-tabs").on("click",   function (e) {
+        //e.preventDefault();
+        $(this).tab('show');
+    })
+        .on("click", "span", function (e) {
+            //var anchor = $(this).siblings('a');
+            var anchor = $(this).parent();
+            $(anchor.attr('href')).remove();
+            //$(this).parent().remove();
+            $(this).parent().parent().remove();
+            //$(".nav-tabs li").children('a').first().click(); 
+            $('#myTab li:last').tab('show');
+            e.stopPropagation();
+        });
+
+    $('.add-contact').click(function (e) {
+        e.preventDefault();
+        var id = $(".nav-tabs").children().length; //think about it ;)
+        $(this).closest('li').before('<li><a class="nav-link" href="#contact_' + id + '">New Tab<span class="oi oi-circle-x"></span></a></li>');
+        $('.tab-content').append('<div class="tab-pane" id="contact_' + id + '">Contact Form: New Contact ' + id + '</div>');
+    }); 
+    $('#btnAdd').click(function (e) {
+        var nextTab = $('#myTab li').length+1; 
+        // create the tab
+        $('<li><a class="nav-link" href="#tab'+nextTab+'" data-toggle="tab">Tab '+nextTab+'<span class="oi oi-circle-x"></span></a></li>').appendTo('#myTab'); 
+        $('<div class="tab-pane" id="tab'+nextTab+'">tab' +nextTab+' content</div>').appendTo('.tab-content'); 
+        $('#myTab li:last').tab('show');
+    });
+//]]>
 </script>
 </body>
 </html>
