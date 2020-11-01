@@ -100,15 +100,17 @@
 
         <div class="sideBar">
             <ul v-for="group in group" v-if="group.id==selectedgroup" class="sideMenu"> 
-                <button id="btnAdd">add</button>
+                <button id="btnAdd" @click="activemenu('')">add</button> 
             	<a href="#">{{group.value}}</a>
-            	<li v-for="list in menu" v-if="list.pid==group.id">
-                    <a href="#" v-if="subcount(list.id)==0" >{{list.value}}</a> 
+            	<li v-for="list in menu" v-if="list.pid==group.id"  >
+                    <template v-if="subcount(list.id)==0"> 
+                        <a @click="activemenu(list)"  >{{list.value}}</a> 
+                    </template>
                     <template v-else>
                         <div class="sideMenu_menu"  :class="list.open?'active_do':''"  @click="list.open=!list.open">{{list.value}}</div>
                         <ul class="sideMenu_1depth"  v-show="list.open" style="display:block;">
-                            <li v-for="sidemenu in submenu(list.id)">
-                                <a href="#">{{sidemenu.value}}</a>
+                            <li v-for="sidemenu in submenu(list.id)"  @click="activemenu('')">
+                                <a >{{sidemenu.value}}</a>
                             </li>
                         </ul>
                     </template>
@@ -186,7 +188,27 @@
                 group:group,
                 menu:menu,
             },
-            methods: {   
+            methods: {    
+                test: function (e) {
+                // `this` 는 vm 인스턴스를 가리킵니다. 
+
+                    var nextTab = $('#myTab li').length+1; 
+                    // create the tab
+                    $('<li><a class="nav-link" href="#tab'+nextTab+'" data-toggle="tab">'+e.value+'<span class="oi oi-circle-x"></span></a></li>')
+                        .appendTo('#myTab'); 
+                    $('<div class="tab-pane" id="tab'+nextTab+'">' +e.value+' content</div>').appendTo('.tab-content'); 
+                    $('#myTab li:last').tab('show');
+                },    
+                activemenu: function (e) {
+                // `this` 는 vm 인스턴스를 가리킵니다. 
+
+                    var nextTab = $('#myTab li').length+1; 
+                    // create the tab
+                    $('<li><a class="nav-link" href="#tab'+nextTab+'" data-toggle="tab">'+e.value+'<span class="oi oi-circle-x"></span></a></li>')
+                        .appendTo('#myTab'); 
+                    $('<div class="tab-pane" id="tab'+nextTab+'">' +e.value+' content</div>').appendTo('.tab-content'); 
+                    $('#myTab li:last').tab('show');
+                },  
                 subcount: function (id) {
                 // `this` 는 vm 인스턴스를 가리킵니다.
                     return this.submenu(id).length;
@@ -195,7 +217,7 @@
                 // `this` 는 vm 인스턴스를 가리킵니다. 
                     var newArr = menu.filter(function(el){ return el.pid == id;})
                     return newArr;
-                }, 
+                },
             }
         })
 </script>
@@ -233,6 +255,13 @@
         $('<div class="tab-pane" id="tab'+nextTab+'">tab' +nextTab+' content</div>').appendTo('.tab-content'); 
         $('#myTab li:last').tab('show');
     });
+    function addmeno  (e) {
+        var nextTab = $('#myTab li').length+1; 
+        // create the tab
+        $('<li><a class="nav-link" href="#tab'+nextTab+'" data-toggle="tab">Tab '+nextTab+'<span class="oi oi-circle-x"></span></a></li>').appendTo('#myTab'); 
+        $('<div class="tab-pane" id="tab'+nextTab+'">tab' +nextTab+' content</div>').appendTo('.tab-content'); 
+        $('#myTab li:last').tab('show');
+    }
 //]]>
 </script>
 </body>
