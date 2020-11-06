@@ -1,0 +1,93 @@
+<%@ taglib prefix="c"      uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="form"   uri="http://www.springframework.org/tags/form" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags"%>
+<%@ taglib prefix="able" uri="/WEB-INF/tlds/able.tld" %>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
+
+<sec:authentication var="userInfo" property="principal" />
+
+<meta id="_csrf" name="_csrf" content="${_csrf.token}"/>
+
+<!-- Bootstrap core CSS -->
+<link href="<c:url value='/css/bootstrap/bootstrap.min.css'/>" rel="stylesheet">
+<link href="<c:url value='/css/common_ui.css'/>" rel="stylesheet">
+
+<link href="<c:url value='/css/style.css'/>" rel="stylesheet">
+
+<!-- rMateGridH5 CSS -->
+<link rel="stylesheet" type="text/css" href="<c:url value='/rMate/rMateGridH5/Assets/rMateH5.css'/>" /> <!-- rMateGridH5 라이센스 -->
+<script type="text/javascript" src="<c:url value='/rMate/LicenseKey/rMateGridH5License.js'/>" ></script> <!-- rMateGridH5 라이브러리 -->
+<%--<script type="text/javascript" src="<c:url value='/rMate/rMateGridH5/JS/rMateGridH5.js'/>" ></script>--%>
+<%--&lt;%&ndash;<script type="text/javascript" src="<c:url value='/rMate/rMateGridH5/JS/rMate5.js'/>" ></script>&ndash;%&gt;--%>
+<%--<script type="text/javascript" src="<c:url value='/rMate/rMateGridH5/JS/rmate3.js'/>" ></script>--%>
+<script type="text/javascript" src="<c:url value='/rMate/rMateGridH5/JS/rmate2.js'/>" ></script>
+<script type="text/javascript" src="<c:url value='/rMate/rMateGridH5/JS/jszip.min.js'/>"></script>
+
+<!-- jQuery -->
+<script src="<c:url value='/js/jquery/jquery-3.5.1.js'/>"></script>
+<!-- calendar -->
+<script src="<c:url value='/js/jquery/jquery-ui.js'/>"></script>
+<script src="<c:url value='/js/jquery/jquery.mtz.monthpicker.js'/>"></script>
+<link href="<c:url value='/css/jquery-ui.css'/>"  rel="stylesheet" type="text/css" />
+
+<script src="<c:url value='/js/common/common_transaction.js'/>"></script>
+<script src="<c:url value='/js/common/common_ui.js'/>"></script>
+<script src="<c:url value='/js/vue/vue.js'/>"></script>
+
+
+<!-- select2 -->
+<link href="<c:url value='/css/select2.min.css'/>"    rel="stylesheet" type="text/css"/>
+<script src="<c:url value='/js/select2.min.js'/>"></script>
+
+<!-- r mate -->
+<script src="<c:url value='/js/common/common_ui_rmate.js'/>"></script>
+
+<script type="text/javascript">
+<!--
+//var token = "${_csrf.token}";
+
+rMateGridH5.setAssetsPath("<c:url value='/rMate/rMateGridH5/Assets/'/>");
+
+    var styleCss =
+    '<Style>\
+         .gridStyle {\
+             color:#333333;\
+             alternatingItemColors:#FFFFFF,#FFFFFF;\
+             borderTopColor:#DDDDDD;\
+             headerColors:#FFFFFF,#FFFFFF;\
+             headerRollOverColor:#FFFFFF;\
+             headerStyleName:gridHeaderStyle;\
+             headerSeparatorColor:#D1E1E9;\
+             headerHorizontalSeparatorColor:#D1E1E9;\
+             headerBorderTopColor:#446DDF;\
+             horizontalGridLines:true;\
+             horizontalGridLineColor:#E6E6E6;\
+             selectionColor:#5184b0;\
+             rollOverColor:#D4DBE4;\
+             fontSize:12px;\
+             verticalAlign:middle;\
+             verticalGridLines:true;\
+             verticalGridLineColor:#E6E6E6;\
+             headerHeight:40px;\
+             rowHeight:28px;\
+             paddingTop:5px;\
+             paddingBottom:0\
+         }\
+         .gridHeaderStyle {\
+             color:#333333;\
+             fontWeight:bold;\
+             fontSize:12px;\
+             horizontalAlign:center;\
+             verticalAlign:middle;\
+             separatorColor:#D1E1E9;\
+         }\
+    </Style>';
+
+    var gridPaddingAndHeightStr = ' ' +
+        'paddingTop="5" ' +
+        'paddingBottom="0" ' +
+        'headerHeight="40" ' +
+        'rowHeight="28" ';
+
+//-->
+</script>
