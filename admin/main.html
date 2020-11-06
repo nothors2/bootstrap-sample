@@ -1,0 +1,330 @@
+<%@ page language="java" contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>글로벌생산성경영시스템 GPMS</title>
+    <%@ include file="/WEB-INF/jsp/include/headerMain.jspf" %>
+
+</head>
+<style>
+    .sideMenu {
+        background: #446ddf url(<c:url value='/images/side_back.png'/>) 0 -180px;
+    }
+
+    .nav-tabs {
+        border-bottom: 0 solid #151414;
+    }
+    .nav-link {
+        display: block;
+        padding: 0;
+
+    }
+    .nav-link:hover {
+        color: #9fcdff;
+    }
+    .nav-tabs .nav-link {
+        border: 0px solid transparent;
+        border-top-left-radius: .25rem;
+        border-top-right-radius: .25rem;
+    }
+    .tab_menu {
+        border-top: 1px solid #354773;
+    }
+    .sideMenu > li {
+        cursor: pointer;
+    }
+    .tab_menu li {
+        padding: 0 ;
+    }
+    .nav-tabs .nav-link {
+        border: 0px ;
+        padding: 0 15px 0 15px;
+    }
+    /*--cause vue event bug,  just re define*/
+    /*.list-group-item {
+        position: relative;
+        display: inline;
+        padding: unset;
+        background-color: transparent;
+        border: 0px solid rgba(0,0,0,.125)
+    }*/
+    /*
+        list-group-item padding 을 0 으로 수정 2020-11-05 공성준
+        좌측 메뉴
+    */
+    .list-group-item {
+        position: relative;
+        display: inline;
+        padding: 0;
+        background-color: transparent;
+        border: 0px solid rgba(0,0,0,.125)
+    }
+    .nav-close {
+        background:transparent url('images/tab_x.png') 0 0 no-repeat ;
+    }
+    .nav-tabs>li>a>div {
+        display: none;
+        cursor: pointer;
+        position: relative;
+        width: 20px;
+        height: 20px;
+        left: 4px;
+        top: 6px;
+    }
+    .nav-tabs>li:hover>a>div {
+        display: inline-block;
+    }
+</style>
+<body>
+
+<div id="wrap">
+
+    <div id="main" class="layout">
+        <div class="navBar">
+            <div class="leftNaviBox">
+                <h1 class="logo"><img src="images/login_logo.png" alt="현대자동차" /></h1>
+            </div>
+            <div class="menu3Button">
+                <!-- 닫히는 버튼 -->
+                <a href="#"><img src="images/menu_btn.png" alt="메뉴" /></a>
+            </div>
+            <div class="rightNaviBox">
+                <ul class="rightNavi_menu">
+                    <li v-for="group in groups" @click="selectGroup(group,group.id)" >
+                        <a :href="'#'+group.id" :class="[selectGroupId == group.id?'rightNavi_on':'']">{{group.name}}</a>
+                    </li>
+                </ul>
+
+                <div class="tab_menu">
+                    <ul class="nav nav-tabs" id="tabList" role="tablist">
+                        <li>
+                            <a class="nav-link active" id="home-tab" data-toggle="tab" href="#home" role="tab" aria-controls="home"
+                               aria-selected="true">Home
+<%--                                <div class="nav-close"></div>--%>
+                            </a>
+                        </li>
+
+                    </ul>
+                </div>
+
+            </div>
+            <!-- 상단 컨텐츠 아이콘 -->
+            <div class="top_sns">
+                <a href="#"><img src="images/top_home_ico.png" alt="Home" /></a>
+                <a href="#"><img src="images/top_memo_ico.png" alt="메모" /></a>
+                <a href="/logout.do"><img src="images/top_out_ico.png" alt="나가기" /></a>
+            </div>
+
+
+        </div>
+
+        <div class="sideBar">
+            <ul class="sideMenu"  v-for="group in groups" v-if="group.id==selectGroupId"  >
+                <a href="#">{{group.value}}</a>
+                <li v-for="menu in menus"  v-if="menu.pid==group.id"   >
+                    <template v-if="subcount(menu.id)==0">
+                        <a  class="list-group-item"  @click="selectMenu(menu.id)" href="javascript:" >{{menu.name}}</a>
+                    </template>
+                    <template v-else>
+                        <div class="sideMenu_menu"  :class="menu.folder?'active_do':''"  @click="menu.folder=!menu.folder">{{menu.name}}</div>
+                        <ul class="sideMenu_1depth"  v-show="menu.folder" style="display:block;">
+                            <li v-for="sidemenu in submenu(menu.id)"  @click="selectMenu(sidemenu.id)">
+                                <a class="list-group-item" href="javascript:" :class="[selectMenuId == sidemenu.id?'sideMenu_1depth_on':'']">{{sidemenu.name}}</a>
+                            </li>
+                        </ul>
+                    </template> 
+                </li>
+            </ul> 
+        </div>
+
+        <!-- S:컨텐츠 시작 -->
+        <div class="contentBar">
+            <div class="tab-content" id="tabContentList">
+                <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro
+                    synth master cleanse. Mustache cliche by sweater eu banh mi, qui irure terry richardson ex squid.
+                    Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate
+                    nisi qui.
+                    <br><br><br><br><br><br><br><br><br>
+                    Raw denim you probably haven't heard of them jean shorts Austin. Nesciunt tofu stumptown aliqua, retro
+                    synth master cleanse. Mustache cliche by sweater eu banh mi, qui irure terry richardson ex squid.
+                    Aliquip placeat salvia cillum iphone. Seitan aliquip quis cardigan american apparel, butcher voluptate
+                    nisi qui.
+                </div>
+            </div>
+        </div>
+        <!-- E:컨텐츠 시작 -->
+
+    </div>
+
+</div>
+
+
+<script type="text/javascript" src="js/common.js"></script>
+
+<script>
+    function selectTab(id){
+        console.log(id);
+        $('.nav-tabs a[href="#'+id+'"]').trigger('click');
+    }
+    function resizeContents(){
+        console.log(window.innerHeight);
+        var tabHeight = window.innerHeight - 126 - 05;
+        $('.tab-content').height(tabHeight);
+    }
+    function throttle(ms,fn){
+        var allow = true;
+        function enable(){
+            allow = true;
+        }
+        return function(e){
+            if(allow){
+                allow = false;
+                setTimeout(enable,ms);
+                fn.call(this,e);
+            }else{
+                //console.log(false);
+            }
+        }
+    }
+    var groups = [
+    ];
+    var menus = [
+    ];
+    var app = new Vue({
+        el:'#main',
+        data:{
+            type:"",
+            groups:groups,
+            selectGroupId:"08",
+            selectMenuId:"home",
+            menus:menus,
+            tabs:[]
+        },
+        methods:{
+            selectMenu : function(id){
+                const tab = this.tabs.filter(function(tab){return tab.id == id;})[0];
+                const menu = this.menus.filter(function(menu){return menu.id == id;})[0];
+                if(!menu.url) return;
+                if(!tab){
+                    this.tabs.push(menu);
+                    //setTimeout( function(){selectTab(id)},100);  //지연선택
+
+                    addTab(menu);
+                    this.focusMenu(id);
+                }else{
+                    selectTab(id);
+                    const tabs = this.tabs.filter(function(tab){return tab.id != id;});
+                    this.tabs = tabs;
+                    this.tabs.push(menu); //젤 마지막으로
+                }
+                this.selectMenuId = id;
+            },
+            selectGroup : function(group,id){
+                if(group.url) return;
+                this.selectGroupId = id;
+            },
+            removeMenu:function(id,event){  // 사용안함
+
+                var pos = -1;
+                for(var i =0;i<this.tabs.length;i++){
+                    if(this.tabs[i].id == id){
+                        pos = i; break;
+                    }
+                }
+                if(pos<0) return;
+                this.tabs[pos].remove = true;
+
+                //const tabs = this.tabs.filter(function(tab){return tab.id != id;});
+                //this.tabs = tabs;
+
+                //this.focusMenu(tabs[tabs.length-1].id);
+            },
+            focusMenu : function(id){
+                setTimeout( function(){selectTab(id)},100);  //지연선택 vue render time
+            },
+            subcount: function (id) {
+                // `this` 는 vm 인스턴스를 가리킵니다.
+                return this.submenu(id).length;
+            },
+            submenu: function (id) {
+                // `this` 는 vm 인스턴스를 가리킵니다.
+                var newArr = this.menus.filter(function(el){ return el.pid == id;})
+                return newArr;
+            },
+        }
+    });
+
+    $(document.body).ready(function () {
+        //app.menus.push( {id:"menu5",name:"boot Test2",url:"../boot.html"});
+
+        fn_transaction("group","/common/user/selectList.do/selectMenuGroup",fn_callback);
+        fn_transaction("menu","/common/user/selectList.do/selectMenu",fn_callback);
+
+        $('.nav-tabs a[href="#home"]').trigger('click');
+        //$(window).resize(resizeContents);
+        $(window).resize(throttle(200,function(e){resizeContents()}));
+        resizeContents();
+    });
+    function fn_callback(func,data,status){
+        if(data.error){
+            fn_alert(data.error.message);
+        }else{
+            if(func == 'group'){
+                app.groups = data.resultList;
+            }else{
+                app.menus = data.resultList;
+
+            }
+        }
+    }
+</script>
+
+<!--    텝 추가, 닫기 관련  -->
+<script type="text/javascript">//<![CDATA[
+function removeTab(e){
+    var anchor = $(this).parent();
+    var id = anchor.attr('href').substring(1);
+    $(anchor.attr('href')).remove();    //content remove
+    $(this).parent().parent().remove();  //tab remove
+    //$('#tabList a:last').tab('show');
+    const tabs = app.tabs.filter(function(tab){return tab.id != id;});
+    app.tabs = tabs;
+    if(tabs.length>0)
+        selectTab(tabs[tabs.length-1].id);
+    else selectTab("home");
+    e.stopPropagation();
+}
+
+function addTab(menu){
+    var nextTab = $('#tabList li').length+1;
+    // create the tab
+    var tabList = '<li>\
+                        <a class="nav-link" href="#'+menu.id+'" data-toggle="tab">'+menu.name+'<div class="nav-close"></div>\
+                        </a>\
+                   </li>';
+    $(tabList).appendTo('#tabList');
+    var content = '<div role="tabpanel" class="tab-pane fade h-100" id="'+menu.id+'">\
+                    <iframe src="'+menu.url+'" width="100%" frameborder="NO" framespacing="0"  height="99%"></iframe>\
+                   </div>';
+    $(content).appendTo('#tabContentList');
+    //$('#tabList a:last').tab('show');
+}
+$(".nav-tabs").on("click", "a", function (e) {
+    //e.preventDefault();
+    $(this).tab('show');
+    var id = $(this).attr("href").substring(1);
+    if(id == "home") return;
+
+    const menu = app.menus.filter(function(menu){return menu.id == id;})[0];
+    if(!menu) return;
+    const tabs = app.tabs.filter(function(tab){return tab.id != id;});
+    app.tabs = tabs;
+    app.tabs.push(menu); //젤 마지막으로
+
+}).on("click", "div", removeTab);
+
+//]]></script>
+</body>
+</html>
