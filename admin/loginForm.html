@@ -1,0 +1,139 @@
+<%@ page contentType="text/html; charset=utf-8" %>
+<%@ include file="/WEB-INF/jsp/include/declare.jspf" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>글로벌생산성경영시스템 GPMS</title>
+    <link rel="stylesheet" href="<c:url value='/css/style.css'/>">
+    <%--jQuery--%>
+    <script src="<c:url value='/js/jquery/jquery-2.1.4.min.js'/>"></script>
+</head>
+<%
+    System.out.println("에러메시지 : " + request.getAttribute("errorMessage"));
+    String userIdReq = request.getHeader("SSO_ID");
+    System.out.println("LoginForm SSO_ID : " + userIdReq);
+    String action = "/loginProcess.do";
+%>
+<body>
+<div id="login">
+    <form name="loginForm" id="loginForm" action="<%=action%>" method="post">
+        <input type="hidden" name="_csrf" value='${_csrf.token}'>
+        <div class="login_box_wrap">
+            <div class="login_logo"><img src="<c:url value='/images/login_logo.png'/>" alt="글로벌생산성경영시스템 GPMS"/></div>
+            <div class="login_box">
+                <div class="login_conts">
+                    <div class="login_txt">
+                        글로벌생산성경영시스템 <span>GPMS</span>
+                    </div>
+                    <div class="login_id_R">
+                        <input type="text" class="login_id_input_R" name="username" id="username"
+                               placeholder="아이디를 입력하세요" value="GPMS001"/>
+                        <input type="hidden" name="dupCheck" id="dupCheck" value="${dupCheck}"/>
+                    </div>
+                    <div class="login_pw_R">
+                        <input type="password" class="login_pw_input_R" name="password" id="password" placeholder="패스워드"
+                               autocomplete="off" value="1234"/>
+                    </div>
+                    <div class="gap10"></div>
+                    <div class="loginBox_btn_R"><a href="#">로그인</a></div>
+                </div>
+                <div class="gap20"></div>
+                <div class="ac tc_666 tlh140">
+                    GPMS는 당사의 <span class="tc_blue">생산성정보가 집약된 시스템</span>으로써 외부로 유출될 경우 회사에
+                    심각한 피해를 입히게 됩니다. 따라서 시스템내의 어떠한 정보도 <span class="tc_red">업무이외의 사용 및 외부유출</span>을
+                    금하며 이를 어길 시 <span class="tc_red">형상 처벌</span>등의 법적 조치를 받을 수 있습니다.
+                </div>
+                <div class="gap20"></div>
+                <div class="radio_check_center ac">
+                    <label class="ridio_conts">동의함
+                        <input type="radio" name="radio" checked/>
+                        <span class="checkmark_radio"></span>
+                    </label>
+                    <label class="ridio_conts">동의하지 않음
+                        <input type="radio" name="radio"/>
+                        <span class="checkmark_radio"></span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        //아이디 INPUT 박스 FOCUS
+        $("#username").focus();
+
+        //아이디 INPUT 박스에서 ENTER KEY 눌렀을 경우 처리.
+        $("#username").keydown(function (key) {
+            if (key.keyCode == 13) {
+                $(".loginBox_btn_R").click();
+            }
+        });
+        //패스워드 INPUT 박스에서 ENTER KEY 눌렀을 경우 처리.
+        $("#password").keydown(function (key) {
+            if (key.keyCode == 13) {
+                $(".loginBox_btn_R").click();
+            }
+        });
+        //LOGIN 버튼 클릭 시 처리
+        $(".loginBox_btn_R").click(function () {
+            //아이디가 0 ~ 10 자리 체크 아니고 비밀번호 입력 없으면 ALERT 창 띄움.
+            if (($("#username").val().length > 10 || $("#username").val().length == 0)
+                || $("#password").val() == 0) {
+                /* ALERT 창
+                */
+                //gmes_dialog(theme, title, msg, autoCloseTime, callback)
+                gmes_dialog('danger'
+                    , 'error'
+                    , 'check userid'
+                    , 2000
+                    , function () {
+                        console.log(this);
+                    });
+                $("#username").focus();
+                // 체크 맞으면 커밋.
+            } else {
+                //세션 종료되지 않고 남은 상황
+                if ($("#dupCheck").val() == "dupl") {
+                    gmes_confirm('default', '로그인', '기존 세션이 종료 되지 않았습니다. 기존 세션을 종료하려면 OK 버튼을 누르세요. ', {
+                            logout: {
+                                label: 'OK', theme: 'info', onClick: function (key) {
+                                    $('#loginForm').submit();
+                                    dialog.close();
+                                }
+                            },
+                            cancel: {
+                                label: 'CANCEL', theme: 'default', onClick: function (key) {
+                                    dialog.close();
+                                }
+                            }
+                        },
+                        null
+                        ,
+                        function () {
+                            console.log(this);
+                        });
+                } else {
+                    $('#loginForm').submit();
+                }
+            }
+        });
+
+        // 오류창 닫음.
+        $(".popclose").click(function () {
+            $("#popLayer").hide();
+            $("#username").focus();
+        });
+
+        // 오류창 닫음.
+        $(".popBottom").click(function () {
+            $("#popLayer").hide();
+            $("#username").focus();
+        });
+
+    });
+</script>
+</body>
+</html>
