@@ -1,0 +1,343 @@
+<%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8" %>
+<%@ include file="/WEB-INF/jsp/include/declare.jspf" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>R Mate Sample Document</title>
+    <%@ include file="/WEB-INF/jsp/include/headerRMate.jspf" %>
+</head>
+<script type="text/javascript">
+
+    var grid1;
+    var grid2;
+    var app;
+    $(document.body).ready(function () {
+        app = new Vue({
+            el: '#form',
+            data: {
+                compList: [],
+                loctList: [],
+                cntaList: [],
+                langList: [],
+                skf0List: [],
+                hpvgList: [],
+                spgbList: [],
+                digbList: [],
+                keys: {
+                    comp: '<sec:authentication property="principal.coCd" />',
+                    cnta: '*',
+                    loct: '2',
+                    lang: '*',
+                    cntc: '',
+                    check: '',
+                    radio: 'C',
+                },
+                deptUrl: 'selectDeptList',
+            },
+        });
+        fn_codeDataSync({group: 'BUS0'}, function (list) {
+            app.compList = list;
+        });
+        fn_codeDataSync({group: 'LOCT', cocd: app.keys.comp}, function (list) {
+            app.loctList = list;
+        });
+        fn_codeDataSync({group: 'CNTA'}, function (list) {
+            app.cntaList = list;
+        });
+        fn_codeDataSync({group: 'SKF0', cocd: app.keys.comp}, function (list) {
+            app.skf0List = list;
+        });
+        fn_codeDataSync({group: 'HPVG'}, function (list) {
+            app.hpvgList = list;
+        });
+        fn_codeDataSync({group: 'SPGB'}, function (list) {
+            app.spgbList = list;
+        });
+        fn_codeDataSync({group: 'DIGB'}, function (list) {
+            app.digbList = list;
+            grid1 = fn_initRMate(grid_config); // 기존존재위치와 다른이유 그리드 내부 콤보박스에 값이 조회되기전에 그리드가 그려지는 문제
+        });
+        //vue 생성 이후..??
+        $("#goSave").click(function () {
+            maintList('update');
+        });
+        $("#goDelete").click(function () {
+            maintList('delete');
+        });
+
+        $("#goSelect").click(function () {
+            select("select", 1);
+        });
+        $("#goExcel").click(function () {
+            fn_alert("개발중입니다.");
+        });
+
+        var navBar = {
+            barDiv: "gridPageBarDiv",
+            selectFuntion: selectByPage,
+            rowPerPage: "500",
+        }
+        var grid_config = {
+            id: "grid1",
+            gridDiv: "gridDiv",
+            layoutStr: layoutStr,
+            resize: true,
+            layoutComplete: function () {
+                select("select", 1);
+                grid1.gridRoot.getObjectById("cntac").setItemRendererDataProvider(app.cntaList);
+                grid1.gridRoot.getObjectById("skf0c").setItemRendererDataProvider(app.skf0List);
+                grid1.gridRoot.getObjectById("hvetc").setItemRendererDataProvider(app.hpvgList);
+                grid1.gridRoot.getObjectById("spgbc").setItemRendererDataProvider(app.spgbList);
+                grid1.gridRoot.getObjectById("digbc").setItemRendererDataProvider(app.digbList);
+                gridRoot.getObjectById("popupIcon").addEventListener("itemIconClick", itemIconClickHandler);
+                gridRoot.getObjectById("cntnpopup").addEventListener("itemIconClick", itemIconClickHandler);
+            },
+            events: [
+                // {name:'itemIconClick',handler:itemIconClickHandler},
+            ],
+            navBar: navBar,
+        };
+
+        //grid1 = fn_initRMate(grid_config); 기존 존재 위치
+        $("select[name='comp']").change(function (e) {
+            fn_codeDataSync({group: 'LOCT', cocd: app.keys.comp},
+                function (list) {
+                    app.loctList = list;
+                    app.keys.loct = app.loctList[0].value;
+                });
+        });
+
+    });
+
+
+    // 데이터 로드 완료 이벤트 핸들러 함수
+    function itemIconClickHandler(event) {
+        if (event.currentTarget.id == "popupIcon") {
+            fn_getCodePopup(
+                app.keys,
+                'selectDeptList',
+                function (data) {
+                    grid1.gridRoot.setItemFieldAt(data.value, event.rowIndex, "cgrpc");
+                    grid1.gridRoot.setItemFieldAt(data.text, event.rowIndex, "cgrpn");
+                    grid1.setSelected(event.rowIndex);
+                    console.log("call data:", data);
+                }, "조직 검색"
+            );
+            //popupWindow = window.open("/system/commonCode/selectForm.do", "common코드",
+            //                                "toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=no,resizable=no,width=420,height=600,top=100,left=100");
+        } else if (event.currentTarget.id == "cntnpopup") {
+            fn_getCodePopup(
+                app.keys,
+                'selectDeptList',
+                function (data) {
+                    grid1.gridRoot.setItemFieldAt(data.value, grid1.gridRoot.getDataGrid().getSelectedIndex(), "cnt0c");
+                    grid1.gridRoot.setItemFieldAt(data.text, grid1.gridRoot.getDataGrid().getSelectedIndex(), "cntnc");
+                    grid1.setSelected(event.rowIndex);
+                    console.log("call data:", data);
+                }, "조직 검색"
+            );
+        }
+    }
+
+    function eventHandler(event) {
+
+        var msg = " rowIndex2:" + event.rowIndex + " columnIndex2:" + event.columnIndex;
+        var message = "" + event.type + " 이벤트 발생," + msg + "\n";
+        console.log(message);
+    }
+
+    var layoutStr =
+        '<rMateGrid>\
+            <DateFormatter id="datefmt" formatString="YYYY-MM-DD"/>\
+            <DataGrid id="dg1" styleName="gridStyle" headerStyleName="gridHeaderStyle" editable="true" \
+                ' + gridPaddingAndHeightStr + 'sortableColumns="true" lockedColumnCount="5" draggableColumns="true" showHeaders="true" horizontalScrollPolicy="auto" variableRowHeight="false" selectionMode="singleRow">\
+            <columns>\
+                <DataGridColumn  id="selected" dataField="_select" headerText = ""  width="50" textAlign="center" sortable="false" headerRenderer="CheckBoxHeader" itemRenderer="CheckBoxItem" rendererIsEditor="true" editorDataField="selected" trueValue="Y" falseValue="N"/>\
+                <DataGridColumn id="id00" headerText = "No" dataField="rnum" textAlign="center" width="50"/>\
+                <DataGridColumn id="id01" headerText = "조직코드" dataField="cnt0c" textAlign="center" width="100" />\
+                <DataGridColumn id="cntnpopup" textAlign="right" width="30" itemRenderer="IconItem" icon="Magnifier" editable="false" />\
+                <DataGridColumn id="id01" headerText = "조직명" dataField="cntnc" textAlign="letf" width="170"/>\
+                <DataGridColumn id="cntac" headerText = "조직등급" dataField="cntac" textAlign="letf" width="100" itemEditor="ComboBoxEditor" editorDataField="selectedDataField" itemRendererLabelField ="text" itemRendererDataField="value" itemRenderer="DataProviderItem"/>\
+                <DataGridColumn id="id01" headerText = "조직등급명" dataField="cntan" textAlign="letf" width="100" visible="false" />\
+                <DataGridColumn id="skf0c" headerText = "배부기준" dataField="skf0c" textAlign="letf" width="130" itemEditor="ComboBoxEditor" editorDataField="selectedDataField" itemRendererLabelField ="text" itemRendererDataField="value" itemRenderer="DataProviderItem"/>\
+                <DataGridColumn id="id01" headerText = "배부기준" dataField="skf0n" textAlign="letf" width="200" visible="false"/>\
+                <DataGridColumn id="hvetc" headerText = "적용구분" dataField="hvetc" textAlign="letf" width="130" itemEditor="ComboBoxEditor" editorDataField="selectedDataField" itemRendererLabelField ="text" itemRendererDataField="value" itemRenderer="DataProviderItem"/>\
+                <DataGridColumn id="id01" headerText = "적용구분" dataField="hvetn" textAlign="letf" width="100" visible="false" />\
+                <DataGridColumn id="id01" headerText = "공통지원" dataField="gscnc" textAlign="center" width="55" itemRenderer="CheckBoxItem" rendererIsEditor="true" editorDataField="selected" trueValue="1" falseValue="0"/>\
+                <DataGridColumn id="id01" headerText = "제외부서" dataField="grdpc" textAlign="center" width="55" itemRenderer="CheckBoxItem" rendererIsEditor="true" editorDataField="selected" trueValue="1" falseValue="0"/>\
+                <DataGridColumn id="id01" headerText = "삭제조직" dataField="flagc" textAlign="center" width="55" itemRenderer="CheckBoxItem" rendererIsEditor="true" editorDataField="selected" trueValue="1" falseValue="0"/>\
+                <DataGridColumn id="id01" headerText = "GropG" dataField="cgrpc" textAlign="letf" width="70"/>\
+                <DataGridColumn id="id01" headerText = "GropG2" dataField="cgrpn" textAlign="letf" width="170"  editable="false" />\
+                <DataGridColumn id="popupIcon" textAlign="right" width="30" itemRenderer="IconItem" icon="Magnifier" editable="false" />\
+                <DataGridColumn id="spgbc" headerText = "SHOP 구분" dataField="spgbc" textAlign="letf" width="120" itemEditor="ComboBoxEditor" editorDataField="selectedDataField" itemRendererLabelField ="text" itemRendererDataField="value" itemRenderer="DataProviderItem"/>\
+                <DataGridColumn id="id01" headerText = "SHOP 구분" dataField="spgbn" textAlign="letf" width="100" visible="false" />\
+                <DataGridColumn id="digbc" headerText = "직간구분" dataField="digbc" textAlign="letf" width="55"  itemEditor="ComboBoxEditor" editorDataField="selectedDataField" itemRendererLabelField ="text" itemRendererDataField="value" itemRenderer="DataProviderItem"/>\
+                <DataGridColumn id="id01" headerText = "직간구분" dataField="digbn" textAlign="letf" width="100" visible="false"/>\
+                <DataGridColumn id="id01" headerText = "사업부" dataField="deptc" textAlign="letf" width="100"/>\
+                <DataGridColumn id="id03" headerText = "FROM" dataField="fromc"  textAlign="center" width="70" formatter="{datefmt}" itemEditor="DateEditor" editorProperties=\'{"editable":true}\' />\
+                <DataGridColumn id="id03" headerText = "TO"   dataField="to00c" textAlign="center" width="70" formatter="{datefmt}" itemEditor="DateEditor" editable="false" />\
+            </columns>\
+            </DataGrid>\
+            ' + styleCss + ' \
+         </rMateGrid>';
+
+    function selectByPage(page) {
+        select("select", page);
+    }
+
+    function select(gubn, page) {
+        if (gubn == 'select') {
+            grid1.setDataStart();
+            var pagingInfo = {
+                currentPageNo: page,
+                pageSize: grid1.config.navBar.rowPerPage,
+            }
+        }
+        var param = app.keys;
+        console.log(param);
+        var jsonData = {
+            map: param,
+            pagingInfo: pagingInfo,
+        };
+        fn_transaction(gubn, "/system/groupmaster/selectList.do/selectList", jsonData, fn_callback);
+    }
+
+    function fn_callback(func, data, status) {
+        if (data.error) {
+            fn_alert(data.error.message);
+        } else {
+            if (func == 'select') {
+                grid1.setDataEnd(data);
+            } else {
+                if (data.message)
+                    fn_alert(data.message + ",[" + data.resultCount + "]");
+                grid1.initSelectedList();
+
+            }
+        }
+    }
+
+    function maintList(func) {
+
+        var param = app.keys;
+        var dataGrid = grid1.gridRoot.getDataGrid();
+        dataGrid.setEnabled(false);
+        dataGrid.setEnabled(true);//edit end
+
+        var list = grid1.getSelectedList();
+        if (list.length < 1) {
+            fn_alert("선택된 데이터가 없습니다.");
+            return;
+        }
+        var jsonData = {
+            map: param,
+            voList: list,
+        };
+        fn_transaction(func, "/system/groupmaster/maintList.do/" + func + "List", jsonData, fn_callback);
+    }
+
+</script>
+
+<body>
+<div class="contentPgm">
+    <%--페이지타이틀--%>
+    <div class="content_title">조직마스터</div>
+    <%--검색조건--%>
+    <div id="form" class="box_Atype">
+        <table class="tbl_base">
+            <caption>조직마스터</caption>
+            <colgroup>
+                <col style="width:110px;"/>
+                <col style="width:300px;"/>
+                <col style="width:110px;"/>
+                <col style="width:300px;"/>
+                <col style="width:130px;"/>
+                <col style="width:110px;"/>
+                <col style="width:300px;"/>
+                <col style="width:*;"/>
+            </colgroup>
+            <tbody>
+            <tr>
+                <td class="ar">회사</td>
+                <td>
+                    <select name="comp" class="ui_sel w100p" v-model="keys.comp">
+                        <option v-for="list in compList" :value="list.value">{{list.text}}</option>
+                    </select>
+                </td>
+                <td class="ar">지역</td>
+                <td>
+                    <select name="loct" id="loct" class="ui_sel w90p" v-model="keys.loct">
+                        <option v-for="list in loctList" :value="list.value">{{list.text}}</option>
+                    </select>
+                </td>
+                <td>
+                    <label>신규조직
+                        <input name="checkbox" type="checkbox" id="check1" value="0" v-model="keys.check"/>
+                    </label>
+
+                    <%--<span class="checkmark_etc"></span>--%>
+                </td>
+                <td class="ar">제외부서</td>
+                <td>
+                    <select name="main" id="lang" class="ui_sel w300 mg10" v-model="keys.lang">
+                        <option value="*">전체</option>
+                        <option value="O">적용</option>
+                        <option value="1">제외</option>
+                    </select>
+                </td>
+                <td></td>
+            </tr>
+            <tr>
+                <td class="ar">조직등급</td>
+                <td>
+                    <select name="cnta" id="cnta" class="ui_sel w100p" v-model="keys.cnta">
+                        <option value="*">전체</option>
+                        <option v-for="list in cntaList" :value="list.value">{{list.text}}</option>
+                    </select>
+                </td>
+                <td class="ar">조직코드</td>
+                <td>
+                    <select2 name="cntc" id="cntc" class="input_A w90p" v-model="keys.cntc" :url="deptUrl":para="keys">
+                    </select2>
+                </td>
+                <td colspan="3">
+                    <div class="radio_check">
+                        <label class="ridio_conts">CURRENT
+                            <input name="radio" type="radio" id="radio1" value="C" v-model="keys.radio"/>
+                            <span class="checkmark_radio"></span>
+                        </label>
+                        <label class="ridio_conts">HISTORY
+                            <input name="radio" type="radio" id="radio2" value="H" v-model="keys.radio"/>
+                            <span class="checkmark_radio"></span>
+                        </label>
+                    </div>
+                </td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <%--간격--%>
+    <div class="gap10"></div>
+    <%--버튼--%>
+    <div class="ar">
+        <a href="#" id="goSelect" class="btn_typeA btn_search">조회</a>
+        <a href="#" id="goSave" class="btn_typeA btn_save">저장</a>
+        <a href="#" id="goDelete" class="btn_typeA btn_delete">삭제</a>
+        <a href="#" id="goExcel" class="btn_typeA btn_excel">Excel</a>
+    </div>
+    <%--간격--%>
+    <div class="gap10"></div>
+    <div>
+        <%--그리드 DIV--%>
+        <div id="gridDiv" style="width: 100%; height:510px; "></div>
+    </div>
+    <div class="gap5"></div>
+    <div class="ac">
+        <%--페이징 DIV--%>
+        <div class="paging" id="gridPageBarDiv" style="width: 100%; height:20px"></div>
+    </div>
+</div>
+</body>
+</html>
