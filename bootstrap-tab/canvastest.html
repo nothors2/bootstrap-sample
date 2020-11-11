@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<!DOCTYPE html>
+
+<head>
+    <meta charset="utf-8">
+    <title>Resize HTML5 canvas dynamically | www.htmlcheats.com</title>
+    <style>
+    html, body {
+      width: 100%;
+      height: 100%;
+      margin: 0px;
+      border: 0;
+      overflow: hidden; /*  Disable scrollbars */
+      display: block;  /* No floating content on sides */
+    }
+    </style>
+</head>
+
+<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<!-- Latest compiled and minified JavaScript --> 
+<body>
+    <canvas id='c' style='position:absolute; left:0px; top:0px;background-image: url("https://media.geeksforgeeks.org/wp-content/uploads/20190809013546/gfg_350X350.png");background-clip: padding-box;'>
+    </canvas>
+
+    <script> 
+
+
+    function initialize() {
+        // Register an event listener to call the resizeCanvas() function 
+        // each time the window is resized.
+        window.addEventListener('resize', resizeCanvas, false);
+        // Draw canvas border for the first time.
+        resizeCanvas();
+    }
+
+    // Display custom canvas. In this case it's a blue, 5 pixel 
+    // border that resizes along with the browser window.
+    var margin = 5;
+    function redraw() {
+        context.strokeStyle = 'blue';
+        context.lineWidth = '5';
+        context.strokeRect(window.innerWidth*margin/100, innerHeight*margin/100, window.innerWidth*(1 - margin*2/100), window.innerHeight*(1 - margin*2/100));
+    }
+
+    // Runs each time the DOM window resize event fires.
+    // Resets the canvas dimensions to match window,
+    // then draws the new borders accordingly.
+    function resizeCanvas() {
+        htmlCanvas.width = window.innerWidth;
+        htmlCanvas.height = window.innerHeight;
+        redraw();
+    } 
+    var htmlCanvas;
+    var context;
+    $(document.body).ready(function () {
+        htmlCanvas = document.getElementById('c');
+        // Obtain a graphics context on the canvas element for drawing.
+        context = htmlCanvas.getContext('2d');
+
+       // Start listening to resize events and draw canvas.
+       initialize();
+    });
+    </script>
+</body> 
+</html>
