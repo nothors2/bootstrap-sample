@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8">
+    <title>스프링 부트 Admin FrameWork</title>
+    <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.5.1/gsap.min.js"></script>
+ 
+    <!-- <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script> -->
+</head>
+
+<style>
+    body{
+        height: 900px;
+        margin:0;
+    }
+    .containerGrid{
+        margin:0;
+        border-style: dashed;
+        border-width: 0px;
+        display: grid;
+        height: 100%;
+        grid-template-columns: 200px 1fr;
+        grid-template-rows: 160px 1fr 50px;
+        grid-template-areas:
+            "header header header"
+            "aside main main"
+            "aside footer footer"
+        ;
+    }
+    header{
+        grid-area: header;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    main{
+        grid-area: main;
+        border:1px dashed #dcddcb;
+    }
+    aside{
+        grid-area: aside;
+        border:1px dashed #dcddcb;
+    }
+    footer{
+        display: flex;
+        grid-area: footer;
+        border:1px dashed #dcddcb;
+        align-items: center;
+    }
+    .headerContainer{
+        margin:0;
+        border-style: dashed;
+        border-width: 0px;
+        display: grid;
+        width: 100%;
+        height: 100%;
+        grid-template-columns: 200px 1fr 200px;
+        grid-template-rows: 1fr 50px 50px;
+        grid-template-areas:
+            "headerRight . headerLeft"
+            "headerRight menuGroup headerLeft"
+            "headerRight menuTab menuTab"
+        ;
+    }
+    .headerRight{
+        display: flex;
+        grid-area: headerRight;
+        border:1px dashed #dcddcb;
+        justify-content: center;
+        align-items: center;
+    }
+    .headerLeft{
+        display: flex;
+        grid-area: headerLeft;
+        border:1px dashed #dcddcb;
+        justify-content: center;
+        align-items: center;
+    }
+    .menuGroup{
+        grid-area: menuGroup;
+        border:1px dashed #dcddcb;
+    }
+    .menuTab{
+        grid-area: menuTab;
+        border:1px dashed #dcddcb;
+    }
+    .menuList{
+        display: flex;
+        border-radius:3px 3px 0 0 ;
+        border:solid 1px #ccc;
+        background:#eee;
+        color:#888;
+        padding:7px 10px 0;
+    }
+
+    .menuListItem{
+        padding:7px 10px;
+        columns: #999999;
+        border-radius: 5px 5px 0 0;
+        cursor: pointer;
+        border:solid 1px transparent;
+        margin:1px 0 0 10px;
+    }
+    .menuListItem:hover{
+        color: white;
+        background: #ccc;
+    }
+    .active{
+        color:#333;
+        background: #f9f9f9;
+        border:solid 1px #ccc;
+        font-weight:bold;
+    }
+    .asideContainer{
+        display:grid;
+        height:100%;
+        width:100%;
+        grid-template-columns:1fr 10px;
+        grid-template-rows: 50px 1fr 100px;
+        grid-template-areas:
+            "asideHeader asideRight"
+            "asideMenu asideRight"
+            "asideFooter asideRight"
+    }
+    .asideHeader{
+        grid-area: asideHeader;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .asideMenu{
+        grid-area: asideMenu;
+        display: flex;
+        justify-content: left;
+        align-items: left;
+    }
+    .asideRight{
+        grid-area: asideRight;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .asideFooter{
+        grid-area: asideFooter;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .asideMenuUl{
+        padding: 0 5px;
+        border:1px solid #ccc;
+    }
+    .asideMenuUl li{
+        list-style:none;
+    }
+    .asideMenuLi{
+        padding: 5px;
+        cursor: pointer;
+        border:1px solid #ccc;
+    }
+
+    .nav {
+        display: -webkit-box; 
+        display: flex; 
+        flex-wrap: wrap;
+        padding-left: 0;
+        margin-bottom: 0;
+        list-style: none;
+    }
+    .nav-tabs .nav-link {
+        color: #495057;
+        border: 1px solid #5c4e4e;
+
+        border-top-left-radius: .25rem;
+        border-top-right-radius: .25rem;
+        text-decoration: none;
+    }
+    .nav-link {
+        padding: 10px 20PX;
+    }
+    .tab-content>.tab-pane {
+        display: none;
+    }
+    .tab-content>.active {
+        display: block;
+    }
+    .fade.show {
+        opacity: 1;
+    }
+</style>
+<script>
+    $(document.body).ready(function(){
+        $("body").height(window.innerHeight - 2);
+
+        var groups = [
+          {id:"group1", pid:"root",name:"Group Sample",url:"sample.do"},
+          {id:"group2", pid:"root",name:"Group Sample2",url:"sample.do"},
+          {id:"group3", pid:"root",name:"Group Sample3",url:"sample.do"},
+          {id:"group4", pid:"root",name:"Group Sample4",url:"sample.do"},
+          {id:"example", pid:"root",name:"예제",url:"sample.do"},
+          {id:"system", pid:"root",name:"시스템",url:"sample.do"},
+        ];
+
+        var menus = [
+          {id:"menu1", pid:"group1",name:"Sample 1",url:"sample.do"},
+          {id:"menu12", pid:"group1",name:"Sample12",url:"sample.do"},
+          {id:"menu13", pid:"group1",name:"Sample13",url:"sample.do"},
+          {id:"menu14", pid:"group1",name:"Sample14",url:"sample.do"},
+          {id:"subgroup1", pid:"group1",name:"Sample subgroup1",folder:true,url:"sample.do"},
+          {id:"menu4", pid:"subgroup1",name:"Sample menu4",url:"sample.do"},
+          {id:"menu5", pid:"subgroup1",name:"Sample menu4",url:"sample.do"},
+          {id:"menu6", pid:"group2",name:"Sample Sample4",url:"sample.do"},
+          {id:"subgroup2", pid:"group2",name:"Sample subgroup2",folder:true,url:"sample.do"},
+          {id:"menu4", pid:"subgroup2",name:"Sample menu4",url:"sample.do"},
+          {id:"menu5", pid:"subgroup2",name:"Sample menu5",url:"sample.do"},
+          {id:"menu6", pid:"group3",name:"Group3 menu6",url:"sample.do"},
+          {id:"menu7", pid:"group4",name:"Group4 menu7",url:"sample.do"},
+          {id:"example1", pid:"example",name:"Example 1",url:"sample.do"},
+          {id:"example2", pid:"example",name:"Example 2",url:"sample.do"},
+          {id:"example3", pid:"example",name:"Example 3",url:"sample.do"},
+          {id:"system1", pid:"system",name:"System 1",url:"sample.do"},
+          {id:"system2", pid:"system",name:"System 1",url:"sample.do"},
+        ];
+        var app = new Vue({
+            el:"#main",
+            data:{
+                type:"test",
+                selectGroupId:"group1",
+                selectMenuId:"menu1",
+                menus:menus,
+                groups:groups,
+                tabs:[],
+            },
+            methods:{
+                selectMenu: function (id) {  // 사용안함
+                    const tab = this.tabs.filter(function (tab) { return tab.id == id; })[0];
+                    const menu = this.menus.filter(function (menu) { return menu.id == id; })[0];
+                    if (!tab) {
+                        this.tabs.push(menu);
+                        //setTimeout( function(){selectTab(id)},100);  //지연선택
+
+                        addTab(menu);
+                        this.focusMenu(id);
+                    } else {
+                        selectTab(id);
+                        const tabs = this.tabs.filter(function (tab) { return tab.id != id; });
+                        this.tabs = tabs;
+                        this.tabs.push(menu); //젤 마지막으로
+                    }
+                    this.selectMenuId = id;
+                },
+                focusMenu: function (id) {
+                    setTimeout(function () { selectTab(id) }, 100);  //지연선택 vue render time
+                },                
+                selectGroup:function(id){
+                    this.selectGroupId = id;
+                },
+                subcount:function(id){
+                    return this.submenu(id).length;
+                },
+                submenu:function(id){
+                    var newArr = this.menus.filter(function(el){return el.pid == id;})
+                    return newArr;
+                },
+            }
+        });
+
+        var active_tab_href = "#home";
+        $(".nav-tabs").on("click", "a", function (e) {
+            //e.preventDefault();
+            // $(this).tab('show');
+            $(active_tab_href).hide();
+            $($(this.hash)[0]).show();
+            active_tab_href =  $(this).attr("href");
+            var id = $(this).attr("href").substring(1);
+            // if (id == "home") return;
+
+            // const menu = app.menus.filter(function (menu) { return menu.id == id; })[0];
+            // if (!menu) return;
+            // const tabs = app.tabs.filter(function (tab) { return tab.id != id; });
+            // app.tabs = tabs;
+            // app.tabs.push(menu); //젤 마지막으로
+
+        }).on("click", "span", removeTab);
+    });
+
+    $(document.body).ready(function(){
+        $("body").height(window.innerHeight - 2);
+    });
+
+    function sideMenuSlide(){
+        var css = $(".containerGrid").css("grid-template-columns");
+
+        if(css.includes("200")){
+            $("aside").hide();
+            gsap.to(".containerGrid",0.2,{
+                gridTemplateColumns:"0px 1fr",
+            });
+        }else{
+            $("aside").show();
+            gsap.to(".containerGrid",0.2,{
+                gridTemplateColumns:"200px 1fr",
+            });
+        }
+    }
+    function selectTab(id) {
+        console.log(id);
+        $('.nav-tabs a[href="#' + id + '"]').trigger('click');
+    }
+    
+    function addTab(menu) {
+        var nextTab = $('#tabList li').length + 1;
+        // create the tab
+        var tabList = '<li>\
+                            <a class="nav-link" href="#'+ menu.id + '" data-toggle="tab">' + menu.name + '<span class="oi oi-circle-x"></span>\
+                            </a>\
+                       </li>';
+        $(tabList).appendTo('#tabList');
+        var content = '<div role="tabpanel" class="tab-pane fade h-100" id="' + menu.id + '">\
+                    <iframe src="./'+ menu.url + '" width="100%" frameborder="NO" framespacing="0"  height="99%"></iframe>\
+                </div>';
+        $(content).appendTo('#tabContentList');
+        //$('#tabList a:last').tab('show');
+    }
+</script>
+<body>
+
+<div id="main" class="containerGrid">
+    <header>
+        <div class="headerContainer">
+            <div class="headerRight"><a href="javascript:sideMenuSlide()">상단 좌측 로그</a></div>
+            <div class="headerLeft">상단 우측
+                <a th:href="@{/logout?/login}">
+                    <span class="glyphicon glyphicon-log-out"></span> &nbsp;&nbsp;&nbsp;<span th:text="로그아웃"></span>&nbsp;
+                </a>
+            </div>
+            <div class="menuGroup">
+                <div class="menuList">
+                    <div v-for="group in groups" class="menuListItem" :class="group.id == selectGroupId?'active':''" @click="selectGroup(group.id)">
+                        {{group.name}}
+                    </div>
+                </div>
+            </div>
+            <div class="menuTab">
+                <ul class="nav nav-tabs" id="tabList" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <a href="#home" data-toggle="tab" role="tab" class="nav-link">Main</a>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <a href="#home2" data-toggle="tab" role="tab" class="nav-link">MaiN2</a>
+                    </li>
+                </ul> 
+            </div>
+        </div>
+    </header>
+    <aside>
+        <div class="asideContainer">
+            <div class="asideHeader">
+                <div v-for="group in groups" v-if="group.id==selectGroupId">
+                    {{group.name}}
+                </div>
+            </div>
+            <div class="asideMenu">
+                <ul class="asideMenuUl" v-for="group in groups" v-if="group.id==selectGroupId">
+                    <li v-for="menu in menus" v-if="menu.pid == group.id">
+                        <template v-if="subcount(menu.id)==0">
+                            <div class="asideMenuLi"  @click="selectMenu(menu.id)">{{menu.name}}</div>
+                        </template>
+                        <template v-else>
+                            <div class="asideMenuLi" :class="menu.folder?'active_do':''" @click="menu.folder=!menu.folder">{{menu.name}}</div>
+                            <ul class="asideMenuUl" v-show="menu.folder" >
+                                <li v-for="smenu in submenu(menu.id)" @click="selectMenu(smenu.id)">
+                                    <div class="asideMenuLi" >{{smenu.name}}</div>
+                                </li>
+                            </ul>
+                        </template>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </aside>
+    <main> 
+        <div class="tab-content  w-100" id="tabContentList">
+            <div role="tabpanel" class="tab-pane fade h-100 active show" id="home">
+                <iframe src="./vuetest.html" width="100%" frameborder="NO" framespacing="0" height="99%"></iframe>
+            </div>
+            <div role="tabpanel" class="tab-pane fade h-100" id="home2">
+                <iframe src="./vuetest2.html" width="100%" frameborder="NO" framespacing="0" height="99%"></iframe>
+            </div>
+        </div>
+    </main>
+    <footer>
+        footer
+    </footer>
+</div>
+
+
+</body>
+</html>
