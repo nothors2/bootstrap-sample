@@ -87,6 +87,9 @@
     .menuTab{
         grid-area: menuTab;
         border:1px dashed #dcddcb;
+        display: flex;
+        justify-content: left;
+        align-items: flex-end;
     }
     .menuList{
         display: flex;
@@ -173,19 +176,31 @@
     }
     .nav-tabs .nav-link {
         color: #495057;
-        border: 1px solid #5c4e4e;
-
+        border: 1px solid; 
+        border-color: #dee2e6 #dee2e6 #fff; 
         border-top-left-radius: .25rem;
         border-top-right-radius: .25rem;
         text-decoration: none;
     }
     .nav-link {
-        padding: 10px 20PX;
+        padding: 5px 15PX;
+        border-color: #dee2e6 #dee2e6 #fff;
+    } 
+    .nav-link.active {
+        color: #495057;
+        background-color: #fff;
+        border-color: #2a363f #363a3f #fff;
+    }
+    .tab-content{
+        height: 100%;
+    }
+    .tab-pane {
+        height: 100%;
     }
     .tab-content>.tab-pane {
         display: none;
     }
-    .tab-content>.active {
+    .tab-content>.active { 
         display: block;
     }
     .fade.show {
@@ -270,12 +285,18 @@
         });
 
         var active_tab_href = "#home";
+        var active_tab = "#home";
         $(".nav-tabs").on("click", "a", function (e) {
             //e.preventDefault();
-            // $(this).tab('show');
-            $(active_tab_href).hide();
-            $($(this.hash)[0]).show();
+            // $(this).tab('show');tab-pane
+            //$(active_tab_href).hide();
+            
+            $('.tab-pane').removeClass("active");
+            $($(this.hash)[0]).addClass("active");
+            //$($(this.hash)[0]).show();
             active_tab_href =  $(this).attr("href");
+            $('.nav-tabs a').removeClass("active");
+            $(this).addClass("active");
             var id = $(this).attr("href").substring(1);
             // if (id == "home") return;
 
@@ -288,7 +309,7 @@
         }).on("click", "span", removeTab);
     });
 
-    $(document.body).ready(function(){
+    $(window).resize(function(){
         $("body").height(window.innerHeight - 2);
     });
 
@@ -348,7 +369,7 @@
             <div class="menuTab">
                 <ul class="nav nav-tabs" id="tabList" role="tablist">
                     <li class="nav-item" role="presentation">
-                        <a href="#home" data-toggle="tab" role="tab" class="nav-link">Main</a>
+                        <a href="#home" data-toggle="tab" role="tab" class="nav-link active">Main</a>
                     </li>
                     <li class="nav-item" role="presentation">
                         <a href="#home2" data-toggle="tab" role="tab" class="nav-link">MaiN2</a>
@@ -385,10 +406,10 @@
     </aside>
     <main> 
         <div class="tab-content  w-100" id="tabContentList">
-            <div role="tabpanel" class="tab-pane fade h-100 active show" id="home">
+            <div role="tabpanel" class="tab-pane active show" id="home">
                 <iframe src="./vuetest.html" width="100%" frameborder="NO" framespacing="0" height="99%"></iframe>
             </div>
-            <div role="tabpanel" class="tab-pane fade h-100" id="home2">
+            <div role="tabpanel" class="tab-pane" id="home2">
                 <iframe src="./vuetest2.html" width="100%" frameborder="NO" framespacing="0" height="99%"></iframe>
             </div>
         </div>
