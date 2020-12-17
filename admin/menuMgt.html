@@ -1,0 +1,291 @@
+<%@ page contentType="text/html; charset=utf-8" pageEncoding="utf-8"%>
+<%@ include file="/WEB-INF/jsp/include/declare.jspf" %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>R Mate Sample Document</title>
+<%@ include file="/WEB-INF/jsp/include/headerRMate.jspf" %>
+</head>
+
+<script type="text/javascript">
+
+    var grid1 ;
+    var grid2 ;
+    var app;
+    $(document.body).ready(function () {
+
+        app = new Vue({
+            el:'#form',
+            data:{
+                MenuList:['1'],
+                keys:{
+                    search:'',
+                },
+                methods:{
+                }
+            },
+        });
+        setCombo();
+        //vue 생성 이후..??
+        $("#goSave").click(function(){
+            maintList('save',grid1.gridRoot.getItemAt(grid1.gridRoot.getDataGrid().getSelectedIndex()));
+        });
+        $("#goDelete").click(function(){
+            maintList('delete');
+        });
+
+        $("#goSelect").click(function(){
+            select(' ',1);
+        });
+        $("#goExcel").click(function(){
+            fn_alert("개발중입니다.");
+        });
+
+
+        var navBar = {
+            barDiv:"gridPageBarDiv",
+            selectFuntion:select,
+            rowPerPage:"500",
+        }
+        var grid_config = {
+            id:"grid1",
+            gridDiv:"gridDiv",
+            layoutStr:layoutStr,
+            resize:true,
+            layoutComplete:function(){
+                                        select(" ",1);
+                                     },
+            events:[
+                    {name:'change',handler:eventHandler},
+                   ],
+            navBar:navBar,
+        };
+
+        var navBar = {
+            barDiv:"gridPageBarDiv2",
+            selectFuntion:select,
+            rowPerPage:"500",
+        }
+        var grid_config2 = {
+            id:"grid2",
+            gridDiv:"gridDiv2",
+            layoutStr:layoutStr2,
+            resize:true,
+            layoutComplete:function(){
+                                      // select("select",1);
+                                     },
+            events:[
+                    {name:"menuItemSelect",handler:menuItemSelectedHandler}
+                   ],
+            navBar:navBar,
+        };
+    	grid1 = fn_initRMate(grid_config);
+        grid2 = fn_initRMate(grid_config2);
+
+    });
+
+    function eventHandler(event) {
+        rowIndex = event.rowIndex;
+        selectDetail(1);
+    }
+
+    function setCombo( ){
+        var jsonData = {
+          //  map: {group:'BUS0' , cocd :'C' }
+        };
+        fn_transaction('combosearch',"/common/selectList.do/MenuList",jsonData,
+            function(func,data, status){
+                if(data.error){
+                    fn_alert(data.error.message);
+                }else{
+                    app.MenuList = data.resultList;
+                }
+            }
+        );
+     }
+
+     function menuItemSelectedHandler(caption){
+         var item = {"tmid":grid1.gridRoot.getItemAt(grid1.gridRoot.getDataGrid().getSelectedIndex()).pgid,"url":"selectForm.do","useyn": "Y"};
+         grid2.gridRoot.addItemAt(item,0);
+
+     }
+
+    var layoutStr =
+        '<rMateGrid>\
+            <DataGrid id="dg1" styleName="gridStyle" headerStyleName="gridHeaderStyle" editable="flase" \
+                sortableColumns="true" headerHeight="40" rowHeight="30" paddingTop="5" paddingBottom="0" draggableColumns="true" showHeaders="true" horizontalScrollPolicy="auto" variableRowHeight="false" selectionMode="singleRow">\
+            <columns>\
+            <DataGridColumn id="id01" dataField="tmid" headerText = "상위 메뉴 ID" editable="false" width="80" textAlign="center" />\
+            <DataGridColumn id="id00" dataField="pgid" headerText = "메뉴 ID" width="120"  textAlign="center" />\
+            <DataGridColumn id="id00" dataField="pgmn" headerText = "메뉴 명" width="180" textAlign="left" />\
+            <DataGridColumn id="id00" dataField="rowlv" headerText = "건 수"   textAlign="center" />\
+            </columns>\
+            </DataGrid>\
+            '+ styleCss +' \
+         </rMateGrid>';
+
+    var layoutStr2 =
+        '<rMateGrid>\
+            <ContextMenu id="cMenu">\
+                <ContextMenuItem caption="Insert Row"/>\
+            </ContextMenu>\
+            <DateFormatter id="datefmt" formatString="YYYY-MM-DD"/>\
+            <DataGrid id="dg1" styleName="gridStyle" headerStyleName="gridHeaderStyle" editable="true" \
+             ' + gridPaddingAndHeightStr + 'sortableColumns="true" contextMenu="{cMenu}" draggableColumns="true" showHeaders="true" horizontalScrollPolicy="auto" variableRowHeight="false" selectionMode="singleRow">\
+            <columns>\
+            <DataGridColumn  id="selected" dataField="_select" headerText = ""  width="40" textAlign="center" sortable="false" headerRenderer="CheckBoxHeader" itemRenderer="CheckBoxItem" rendererIsEditor="true" editorDataField="selected" trueValue="Y" falseValue="N"/>\
+            <DataGridColumn id="id01" dataField="tmid" headerText = "상위 메뉴 ID" editable="true" width="100" textAlign="center" />\
+            <DataGridColumn id="id00" width="100" type ="string" dataField="pgid" headerText = "메뉴 ID"   textAlign="center" />\
+            <DataGridColumn id="id00" width="200" dataField="pgmn" headerText = "메뉴 명"   textAlign="left" />\
+            <DataGridColumn id="id00" dataField="sysdesc" headerText = "PGM 설명"   visible="false"  textAlign="left" />\
+            <DataGridColumn id="id03" type="int" dataField="sort" headerText = "ORDER"  width="50" textAlign="center" />\
+            <DataGridColumn id="id03" dataField="url" headerText = "URL"  width="300"  textAlign="center" />\
+            <DataGridColumn id="id03" dataField="useyn" headerText = "사용 유무"  width="90" fontWeight="bold" textAlign="center" itemEditor="CheckBoxEditor" editorDataField="selected" trueValue="Y" falseValue="N"/>\
+            <DataGridColumn id="id02" editable="false" dataField="mdfydt" headerText = "수정일"  width="80" textAlign="center" />\
+            <DataGridColumn id="id03" editable="false" dataField="updrid" headerText = "수정자"  width="80" textAlign="center" />\
+            </columns>\
+            </DataGrid>\
+            '+ styleCss +' \
+         </rMateGrid>';
+
+    function select(s,page){
+        grid1.setDataStart();
+        grid2.gridRoot.removeAll();
+        var pagingInfo = {
+            currentPageNo:page,
+            pageSize:grid1.config.navBar.rowPerPage,
+        }
+        var param = app.$data.keys;
+        param.s = s;
+        var jsonData = {
+            map: param,
+            pagingInfo:pagingInfo,
+        };
+        fn_transaction("select","/system/menu/selectList.do/selectCodeGroup",jsonData,fn_callback);
+    }
+
+
+    function selectDetail(page) {
+        var param = app.$data.keys;
+        param.pgid = grid1.gridRoot.getItemAt(rowIndex).pgid;
+        param.tmid = grid1.gridRoot.getItemAt(rowIndex).tmid;
+
+        var pagingInfo = {
+            currentPageNo:page,
+            pageSize:grid1.config.navBar.rowPerPage,
+        }
+        var jsonData = {
+              map: param,
+              pagingInfo:pagingInfo,
+        };
+
+        fn_transaction('selectDetail',"/system/menu/selectList.do/selectCodeGroupList",jsonData,fn_callback);
+        return;
+    }
+
+    function fn_callback(func,data,status){
+        if(data.error){
+            fn_alert(data.error.message);
+        }else{
+            if(func == 'select'){
+                grid1.setDataEnd(data);
+            }else if(func == 'selectDetail'){
+                grid2.setDataEnd(data);
+            }else{
+                if(data.message)
+                    fn_alert(data.message+",["+data.resultCount+"]");
+                    grid2.initSelectedList();
+
+            }
+        }
+    }
+
+    function maintList(func,key){
+        var searchParam = {};
+        searchParam.func = func;
+        var list = grid2.getSelectedList();
+        if(list.length<1){
+          fn_alert("Check data to Update");
+          return;
+        }
+        var listData = {
+              voList: list
+        };
+
+        fn_transaction(func,"/system/menu/maintList.do/"+func+"User",listData,fn_callback);
+
+        return;
+    }
+
+
+</script>
+</head>
+<body>
+<div class="contentPgm">
+<%--페이지타이틀--%>
+    <div id="form" class="contentBar">
+        <div class="content_title"><spring:message code='LBL_4032' text='메뉴관리'/></div>
+        <%--검색조건--%>
+        <div class="box_Atype">
+            <table class="tbl_base">
+                <caption>메뉴관리</caption>
+                <colgroup>
+                    <col style="width:150px;"/>
+                    <col style="width:300px;"/>
+                    <col style="width:*;"/>
+                </colgroup>
+                <tbody>
+                <tr>
+                    <td class="ar">메뉴명</td>
+                    <td>
+                        <input id="itemnm" type="text" class="input_A w90p"  v-model="keys.search">
+                    </td>
+                    <td></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <%--간격--%>
+        <div class="gap5"></div>
+
+        <%--버튼--%>
+        <div class="ar">
+            <div id="goSelect" class="btn_typeA btn_search">조회</div>
+            <div id="goSave" class="btn_typeA btn_save">저장</div>
+            <div id="goDelete" class="btn_typeA btn_delete">삭제</div>
+            <div id="goExcel" class="btn_typeA btn_excel">Excel</div>
+        </div>
+        <%--간격--%>
+        <div class ="box_Atype">
+            <button v-for="list in MenuList":value="list.value" class="btn_typeB" onclick="select(value)" >
+                 {{list.text}}
+                 <!--{{list.value}}-->
+            </button>
+        </div>
+        <%--간격--%>
+        <div class="gap10"></div>
+        <div style="width: 100%; height:0; float:left; ">
+            <div>
+                <%--그리드 DIV--%>
+                <div id="gridDiv" style="height:440px; width: 30%; "></div>
+            </div>
+            <div class="ac">
+                <%--페이징 DIV--%>
+                <div class="paging" id="gridPageBarDiv" style="width: 30%; height:20px; "></div>
+            </div>
+        </div>
+        <div>
+            <div>
+                <%--그리드 DIV--%>
+                <div id="gridDiv2" style= "width: 69.5%; height:440px; float:right;"></div>
+            </div>
+            <div class="ac">
+                <%--페이징 DIV--%>
+                <div class="paging" id="gridPageBarDiv2"  style= "width: 69.5%; height:20px; float:right;"></div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

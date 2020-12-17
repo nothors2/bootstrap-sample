@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!DOCTYPE html>
 
 <head>
     <meta charset="utf-8">
@@ -11,6 +10,7 @@
             height: 100%;
             margin: 0px;
             border: 0;
+            /* background-color: #228a4a; */
             overflow: hidden;
             /*  Disable scrollbars */
             display: block;
@@ -19,7 +19,8 @@
     </style>
 </head>
 
-<script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script>
+<script src="./js/jquery/jquery-2.1.4.min.js"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/jquery@3.5.1/dist/jquery.min.js"></script> -->
 <!-- Latest compiled and minified JavaScript -->
 
 <body>
@@ -31,8 +32,9 @@
         </canvas>
     </div>
 
-    <img id="scream" width="0" height="0" src="./images/img_the_scream.jpg" alt="The Scream">
+    <img id="scream" width="1" height="1" src="./images/3x/TQ_OUT.jpg" alt="The Scream">
     <script>
+
 
 
 
@@ -47,12 +49,27 @@
         var w = window.innerWidth;
         var h = window.innerHeight;
 
-        var datas = [
-            { x: 110, y: 210 },
-            { x: 212, y: 117 },
-            { x: 213, y: 219 },
-            { x: 913, y: 719 },
+        var dataPoints = [
+            { x: 210, y: 210 ,color:"#692aa3" },
+            { x: 252, y: 117 ,color:"#2a2ca3" },
+            { x: 413, y: 219 ,color:"#791443" },
+            { x: 813, y: 619 ,color:"#228a4a"  },
         ];
+        var datas = [ 
+        ];
+
+        function makeDatas(){ 
+            for (var i = 0; i < dataPoints.length; i++) { 
+                for(var j=0;j<30;j++){
+                    var point = {};
+                    point.x = dataPoints[i].x + (Math.random() - 0.5) * 50 ;
+                    point.y = dataPoints[i].y + (Math.random() - 0.5) * 60;
+                    point.color = dataPoints[i].color;
+                    datas.push(point);
+                }
+            } 
+        }
+
         var dataSizeW = 1000;
         var dataSizeH = 800;
         var resizeRate = 1;
@@ -73,23 +90,33 @@
             h = htmlCanvas.height * (1 - margin * 2 / 100) * resizeRate;
 
             var img = document.getElementById("scream");
-            context.drawImage(img, baseX, baseY, w, h);
             context.strokeRect(baseX, baseY, w, h);
+            context.drawImage(img, baseX, baseY, w, h);
             drawDatas(w, h);
         }
         function drawDatas(w, h) {
-            var point = {};
+            var point = {}; 
+            context.strokeStyle = 'red';
+            context.lineWidth = '4';
             for (var i = 0; i < datas.length; i++) {
                 point.x = baseX + datas[i].x * w / dataSizeW;
                 point.y = baseY + datas[i].y * h / dataSizeH;
+                point.color = datas[i].color;
                 drawCircle(point);
+                // for(var j=0;j<100;j++){
+                //     point.x = point.x + (Math.random() - 0.5) * 50;
+                //     point.y = point.y + (Math.random() - 0.5) * 50;
+                //     drawCircle(point);
+                // }
             }
+            context.closePath();
         }
         function drawCircle(point) {
             context.beginPath();
+            context.strokeStyle = point.color;
+            //context.lineWidth = '4';
             context.arc(point.x, point.y, 3, 0, 2 * Math.PI);
             context.stroke();
-            context.closePath();
         }
 
         function drawLine(x1, y1, x2, y2) {
@@ -124,70 +151,117 @@
         let isDrawing = false;
         let x = 0;
         let y = 0;
+        let x2 = 0;
+        let y2 = 0;
+        let zoomX = 0;
+        let zoomY = 0;
         $(document.body).ready(function () {
             htmlCanvas = document.getElementById('c');
             // Obtain a graphics context on the canvas element for drawing.
             context = htmlCanvas.getContext('2d');
+
+            makeDatas();
+            
             // Start listening to resize events and draw canvas.
             window.addEventListener('resize', resizeCanvas, false);
             resizeCanvas();
 
-            htmlCanvas.addEventListener('mousedown', function (e) {
-                x = e.offsetX;
-                y = e.offsetY;
-                isDrawing = true;
-                console.log("mousedown", x, y);
-            });
             htmlCanvas.addEventListener("dblclick", function (e) {
 
                 console.log(e);
                 if (isCtrl) {
-                    var upRate = 0.2;
+                    var upRate = 0.3;
                     resizeRate *= 1 + upRate;
-                    var offX = e.clientX/htmlCanvas.width;
-                    var offY = e.clientY/htmlCanvas.height;
+                    var offX = (-1*baseX + e.clientX) / w;//htmlCanvas.width;
+                    var offY = (-1*baseY + e.clientY) / h;//htmlCanvas.height;
                     console.log(offX);
-                    baseX = baseX - htmlCanvas.width * (upRate * offX); 
-                    baseY = baseY - htmlCanvas.height * (upRate * offY); 
-                } else { 
+                    baseX = baseX - w * (upRate * offX);
+                    baseY = baseY - h * (upRate * offY);
+                } else if (isShift) {
+                    var upRate = 0.3;
+                    resizeRate *= 1 - upRate;
+                    var offX = (-1*baseX + e.clientX) / w;//htmlCanvas.width;
+                    var offY = (-1*baseY + e.clientY) / h;//htmlCanvas.height;
+                    console.log(offX);
+                    baseX = baseX + w * (upRate * offX);
+                    baseY = baseY + h * (upRate * offY);
+                }else{
                     resizeRate = 1;
                     baseX = 0; baseY = 0;
                 }
                 redraw();
             });
 
+            htmlCanvas.addEventListener('mousedown', function (e) {      
+                x = e.offsetX;
+                y = e.offsetY;            
+                isDrawing = true;
+                if(isCtrl){ //¿µ¿ªÁܠ   
+                    x2 = e.offsetX;
+                    y2 = e.offsetY;    
+                    zoomX = x2;
+                    zoomY = y2;
+                    return;
+                }
+                console.log("mousedown", x, y);  
+            });
+
             htmlCanvas.addEventListener('mousemove', function (e) {
-                if (isDrawing === true) {
+
+                if (isDrawing === true ) {
+                    if(isCtrl){
+                        console.log(zoomY)
+                        drawLine(x2, y2, e.offsetX, e.offsetY); 
+                        x2 = e.offsetX;
+                        y2 = e.offsetY; 
+                    }else{
                     //drawLine( x, y, e.offsetX, e.offsetY);
-                    htmlCanvas.style.cursor = "pointer";
-                    baseX += e.offsetX - x;
-                    baseY += e.offsetY - y;
-                    //redraw();
+                        htmlCanvas.style.cursor = "pointer";
+                        baseX += e.offsetX - x;
+                        baseY += e.offsetY - y;
+                        //redraw();
+                    }
                     x = e.offsetX;
                     y = e.offsetY;
-
                 }
             });
 
             window.addEventListener('mouseup', function (e) {
                 // console.log("mouseup",e);
                 if (isDrawing === true) {
-                    //drawLine(x, y, e.offsetX, e.offsetY);
-                    htmlCanvas.style.cursor = "";
-                    baseX += e.offsetX - x;
-                    baseY += e.offsetY - y;
-                    redraw();
-                    x = 0;
-                    y = 0;
+                    if(isCtrl){//¿µ¿ªÁ܍
+                        if(e.offsetX - zoomX > 100) {
+                            var marginX = baseX * -1 + zoomX;
+                            var marginY = baseY * -1 + zoomY;
+                            //w = htmlCanvas.width * (1 - margin * 2 / 100) * resizeRate;//Àüü ĵ¹ö½º ũ±⍊                            resizeRate = w/(e.offsetX - zoomX);
+                            baseX = marginX * (htmlCanvas.width/(e.offsetX - zoomX)) * -1;
+                            baseY = marginY * (htmlCanvas.width/(e.offsetX - zoomX)) * -1;
+                            redraw();
+                            //drawLine(zoomX, zoomY, e.offsetX, e.offsetY);  
+                            x2 = e.offsetX;
+                            y2 = e.offsetY;
+                        }
+                    }else{
+                        //drawLine(x, y, e.offsetX, e.offsetY);
+                        htmlCanvas.style.cursor = "";
+                        baseX += e.offsetX - x;
+                        baseY += e.offsetY - y;
+                        redraw();
+                    }
+                    x = e.offsetX;
+                    y = e.offsetY;
                     isDrawing = false;
                 }
             });
             var isCtrl = false;
+            var isShift = false;
             document.onkeyup = function (e) {
                 if (e.which == 17) isCtrl = false;
+                if (e.which == 16) isShift = false;
             }
             document.onkeydown = function (e) {
                 if (e.which == 17) isCtrl = true;
+                if (e.which == 16) isShift = true;
             }
             // htmlCanvas.addEventListener('scroll', function(e) {
             //     console(e);
